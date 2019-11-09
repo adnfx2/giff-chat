@@ -23,10 +23,9 @@ const validationSchema = Yup.object().shape({
     .email("Enter a valid email")
     .required("Email is required"),
   password: Yup.string().required("Password is required"),
-  passwordConfirmation: Yup.string().oneOf(
-    [Yup.ref("password"), null],
-    "Password must match"
-  )
+  passwordConfirmation: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Password must match")
+    .required("Password confirmation is required")
 });
 
 const getValidationErrors = (errors, touched) => {
