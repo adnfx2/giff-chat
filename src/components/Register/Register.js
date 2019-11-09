@@ -52,7 +52,7 @@ const Register = props => {
     >
       <Grid.Column className={styles.form}>
         <Header as="h2" icon color="orange" textAlign="center">
-          <Icon name="puzzle piece" color="black">
+          <Icon name="american sign language interpreting" color="black">
             Giff
           </Icon>
         </Header>
