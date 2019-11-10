@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import styles from "./Register.module.css";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import firebase from "../../firebase/firebase";
+import md5 from "md5";
 
 const validationSchema = Yup.object().shape({
   username: Yup.string()
@@ -22,7 +24,9 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Enter a valid email")
     .required("Email is required"),
-  password: Yup.string().required("Password is required"),
+  password: Yup.string()
+    .min(6, "Password must have at least 6 characters")
+    .required("Password is required"),
   passwordConfirmation: Yup.string()
     .oneOf([Yup.ref("password"), null], "Password must match")
     .required("Password confirmation is required")
@@ -32,7 +36,7 @@ const getValidationErrors = (errors, touched) => {
   const fields = Object.keys(errors);
   const initialValues = { errorsFlags: {}, errorsMessages: [] };
   return fields.reduce((result, field) => {
-    if (touched[field]) {
+    if (touched[field] || field === "fromServer") {
       return {
         errorsFlags: { ...result.errorsFlags, [field]: true },
         errorsMessages: [...result.errorsMessages, errors[field]]
@@ -64,11 +68,37 @@ const Register = props => {
             passwordConfirmation: ""
           }}
           validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 400);
+          onSubmit={(values, { setSubmitting, setFieldError }) => {
+            return firebase
+              .auth()
+              .createUserWithEmailAndPassword(values.email, values.password)
+              .then(createdUser =>
+                createdUser.user
+                  .updateProfile({
+                    displayName: values.username,
+                    photoURL: `http://gravatar.com/avatar/${md5(
+                      createdUser.user.email
+                    )}?d=identicon`
+                  })
+                  .then(() => {
+                    const usersRef = firebase.database().ref("users");
+                    console.log(createdUser);
+                    return usersRef
+                      .child(createdUser.user.uid)
+                      .set({
+                        name: createdUser.user.displayName,
+                        avatar: createdUser.user.photoURL
+                      })
+                      .then(() => console.log("user saved"));
+                  })
+              )
+              .catch(err => {
+                if (err.message.toLowerCase().includes("email")) {
+                  setFieldError("email", err.message);
+                } else {
+                  setFieldError("fromServer", err.message);
+                }
+              });
           }}
         >
           {({
@@ -88,6 +118,7 @@ const Register = props => {
               <React.Fragment>
                 <Form size="large" onSubmit={handleSubmit}>
                   <Segment stacked>
+                    <h2>Register</h2>
                     <Form.Input
                       fluid
                       name="username"
@@ -145,6 +176,7 @@ const Register = props => {
                       fluid
                       size="large"
                       disabled={isSubmitting}
+                      loading={isSubmitting}
                     >
                       Submit
                     </Button>

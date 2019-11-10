@@ -1,0 +1,11 @@
+/* Login.module.css */
+
+.container {
+  height: 100vh;
+  background: var(--bg-white);
+}
+
+.form {
+  max-width: 450px;
+}
+
