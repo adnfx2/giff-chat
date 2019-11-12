@@ -12,7 +12,7 @@ const useStyle = createUseStyles({
   }
 });
 
-const SidePanel = props => {
+const SidePanel = ({ currentUser }) => {
   const styles = useStyle();
 
   return (
@@ -23,7 +23,7 @@ const SidePanel = props => {
       vertical
       className={styles.sidePanel}
     >
-      <UserPanel />
+      <UserPanel currentUser={currentUser} />
     </Menu>
   );
 };

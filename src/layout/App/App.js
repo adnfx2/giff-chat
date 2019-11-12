@@ -5,6 +5,7 @@ import SidePanel from "../../components/SidePanel/SidePanel";
 import Messages from "../../components/Messages/Messages";
 import MetaPanel from "../../components/MetaPanel/MetaPanel";
 import { createUseStyles } from "react-jss";
+import { useSelector } from "react-redux";
 
 const useStyle = createUseStyles({
   app: {
@@ -16,12 +17,13 @@ const useStyle = createUseStyles({
 });
 
 const App = () => {
+  const currentUser = useSelector(({ userData }) => userData.currentUser);
   const styles = useStyle();
 
   return (
     <Grid columns="equal" className={styles.app}>
       <ColorPanel />
-      <SidePanel />
+      <SidePanel currentUser={currentUser} />
       <Grid.Column className={styles.messages}>
         <Messages />
       </Grid.Column>

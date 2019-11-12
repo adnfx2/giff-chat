@@ -18,14 +18,14 @@ const useStyle = createUseStyles({
   }
 });
 
-const UserPanel = props => {
+const UserPanel = ({ currentUser }) => {
   const styles = useStyle();
   const dropdownOptions = () => [
     {
       key: "user",
       text: (
         <span>
-          Signed in as <strong>User</strong>
+          Signed in as <strong>{currentUser.displayName}</strong>
         </span>
       ),
       disabled: true
@@ -61,7 +61,10 @@ const UserPanel = props => {
         </Grid.Row>
         <Grid.Row>
           <Header className={styles.dropdown} inverted as="h4">
-            <Dropdown trigger={<span>User</span>} options={dropdownOptions()} />
+            <Dropdown
+              trigger={<span>{currentUser.displayName}</span>}
+              options={dropdownOptions()}
+            />
           </Header>
         </Grid.Row>
       </Grid.Column>

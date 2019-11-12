@@ -24,8 +24,6 @@ const useAuthRedirect = (path = "/") => {
   const dispatch = useDispatch();
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
-      console.log("user changed");
-      console.log({ user });
       if (user) {
         dispatch(setUser(user));
         history.push(path);
@@ -38,7 +36,6 @@ const useAuthRedirect = (path = "/") => {
 };
 
 const store = createStore(rootReducer, composeWithDevTools());
-
 const Root = () => {
   const isLoading = useSelector(({ userData }) => userData.isLoading);
 
