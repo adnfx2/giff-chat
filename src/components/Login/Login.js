@@ -9,10 +9,20 @@ import {
   Icon
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import styles from "./Login.module.css";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import firebase from "../../firebase/firebase";
+import { createUseStyles } from "react-jss";
+
+const useStyle = createUseStyles({
+  container: {
+    height: "100vh",
+    background: "var(--bg-white)"
+  },
+  form: {
+    maxWidth: 450
+  }
+});
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -38,6 +48,8 @@ const getValidationErrors = (errors, touched) => {
 };
 
 const Login = props => {
+  const styles = useStyle();
+
   return (
     <Grid
       textAlign="center"

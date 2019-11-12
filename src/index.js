@@ -39,9 +39,9 @@ const store = createStore(rootReducer, composeWithDevTools());
 const Root = () => {
   const isLoading = useSelector(({ userData }) => userData.isLoading);
 
-  useAuthRedirect();
+  //  useAuthRedirect();
 
-  if (isLoading) {
+  if (false && isLoading) {
     return <Spinner />;
   } else {
     return (
