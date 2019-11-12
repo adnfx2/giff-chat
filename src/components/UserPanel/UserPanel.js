@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Header, Icon, Dropdown } from "semantic-ui-react";
+import { Grid, Header, Icon, Dropdown, Image } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
 import firebase from "../../firebase/firebase";
 
@@ -62,7 +62,12 @@ const UserPanel = ({ currentUser }) => {
         <Grid.Row>
           <Header className={styles.dropdown} inverted as="h4">
             <Dropdown
-              trigger={<span>{currentUser.displayName}</span>}
+              trigger={
+                <span>
+                  <Image src={currentUser.photoURL} spaced="right" avatar />
+                  {currentUser.displayName}
+                </span>
+              }
               options={dropdownOptions()}
             />
           </Header>
