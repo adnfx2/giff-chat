@@ -15,6 +15,11 @@ const userData = (state = initialUserState, action) => {
         currentUser: payload.currentUser,
         isLoading: false
       };
+    case actionTypes.CLEAR_USER:
+      return {
+        currentUser: null,
+        isLoading: false
+      };
     default:
       return state;
   }

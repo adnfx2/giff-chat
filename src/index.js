@@ -15,7 +15,7 @@ import { createStore } from "redux";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducer";
-import { setUser } from "./actions";
+import { setUser, clearUser } from "./actions";
 import firebase from "./firebase/firebase";
 import Spinner from "./components/Spinner/Spinner";
 
@@ -29,6 +29,9 @@ const useAuthRedirect = (path = "/") => {
       if (user) {
         dispatch(setUser(user));
         history.push(path);
+      } else {
+        dispatch(clearUser());
+        history.push("/Login");
       }
     });
   }, []); //eslint-disable-line
@@ -39,9 +42,9 @@ const store = createStore(rootReducer, composeWithDevTools());
 const Root = () => {
   const isLoading = useSelector(({ userData }) => userData.isLoading);
 
-  //  useAuthRedirect();
+  useAuthRedirect();
 
-  if (false && isLoading) {
+  if (isLoading) {
     return <Spinner />;
   } else {
     return (

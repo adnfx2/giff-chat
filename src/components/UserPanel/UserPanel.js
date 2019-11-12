@@ -1,6 +1,7 @@
 import React from "react";
 import { Grid, Header, Icon, Dropdown } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
+import firebase from "../../firebase/firebase";
 
 const useStyle = createUseStyles({
   userPanel: {
@@ -35,7 +36,18 @@ const UserPanel = props => {
     },
     {
       key: "signout",
-      text: <span>Sign Out</span>
+      text: (
+        <span
+          onClick={() => {
+            firebase
+              .auth()
+              .signOut()
+              .then(() => console.log("Signed out!"));
+          }}
+        >
+          Sign Out
+        </span>
+      )
     }
   ];
   return (
