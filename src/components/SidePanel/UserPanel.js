@@ -14,7 +14,7 @@ const useStyle = createUseStyles({
     }
   },
   dropdown: {
-    padding: "0.25em"
+    "&.ui": { padding: "0.25em" }
   }
 });
 
