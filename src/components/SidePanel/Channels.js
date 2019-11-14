@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { Menu, Icon } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
 import ModalChannel from "../../components/ModalChannel/ModalChannel";
@@ -10,8 +11,8 @@ const useStyle = createUseStyles({
 });
 
 const Channels = ({ currentUser }) => {
-  const [channels, setChannels] = useState([]);
   const [toggleModalChannel, setToggleModalChannel] = useState(false);
+  const channels = useSelector(state => state.channels);
   const styles = useStyle();
 
   return (
@@ -24,6 +25,17 @@ const Channels = ({ currentUser }) => {
           ({channels.length}){" "}
           <Icon name="add" onClick={() => setToggleModalChannel(true)} />
         </Menu.Item>
+        {channels.length > 0
+          ? channels.map(channel => (
+              <Menu.Item
+                key={channel.id}
+                onClick={() => console.log("ch click")}
+                name={channel.name}
+              >
+                # {channel.name}
+              </Menu.Item>
+            ))
+          : ""}
       </Menu.Menu>
       <ModalChannel
         currentUser={currentUser}

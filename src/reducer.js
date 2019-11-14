@@ -25,8 +25,15 @@ const userData = (state = initialUserState, action) => {
   }
 };
 
-const rootReducer = combineReducers({
-  userData
-});
+const channels = (state = [], action) => {
+  if (action.type === actionTypes.LOAD_CHANNELS) {
+    return [...state, action.channel];
+  }
+  return state;
+};
 
+const rootReducer = combineReducers({
+  userData,
+  channels
+});
 export default rootReducer;

@@ -1,8 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import firebase from "../../firebase/firebase";
 import { Button, Icon, Modal, Input, Form } from "semantic-ui-react";
+import { loadChannels } from "../../actions";
+
+const useLoadChannels = channelsRef => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    channelsRef.on("child_added", snap => {
+      const channel = snap.val();
+      console.log(channel);
+      dispatch(loadChannels(channel));
+    });
+  }, []); //eslint-disable-line
+};
 
 const validationSchema = Yup.object().shape({
   channelName: Yup.string()
@@ -52,6 +66,8 @@ const ModalChannel = ({ visibility, onCloseHandler, currentUser }) => {
     validationSchema: validationSchema,
     onSubmit: f => console.log("submittingg") || addChannel()
   });
+
+  useLoadChannels(channelsRef);
 
   const { errorsFlags } = getValidationErrors(errors, touched);
 
