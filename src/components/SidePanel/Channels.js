@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Menu, Icon } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
-import AddChannel from "../../components/AddChannel/AddChannel";
+import ModalChannel from "../../components/ModalChannel/ModalChannel";
 
 const useStyle = createUseStyles({
   channels: {
@@ -9,9 +9,9 @@ const useStyle = createUseStyles({
   }
 });
 
-const Channels = props => {
+const Channels = ({ currentUser }) => {
   const [channels, setChannels] = useState([]);
-  const [toggleAddChannel, setToggleAddChannel] = useState(false);
+  const [toggleModalChannel, setToggleModalChannel] = useState(false);
   const styles = useStyle();
 
   return (
@@ -22,12 +22,13 @@ const Channels = props => {
             <Icon name="exchange" /> CHANNELS
           </span>{" "}
           ({channels.length}){" "}
-          <Icon name="add" onClick={() => setToggleAddChannel(true)} />
+          <Icon name="add" onClick={() => setToggleModalChannel(true)} />
         </Menu.Item>
       </Menu.Menu>
-      <AddChannel
-        visibility={toggleAddChannel}
-        onCloseHandler={() => setToggleAddChannel(false)}
+      <ModalChannel
+        currentUser={currentUser}
+        visibility={toggleModalChannel}
+        onCloseHandler={() => setToggleModalChannel(false)}
       />
     </React.Fragment>
   );

@@ -24,7 +24,7 @@ const SidePanel = ({ currentUser }) => {
       className={styles.sidePanel}
     >
       <UserPanel currentUser={currentUser} />
-      <Channels />
+      <Channels currentUser={currentUser}/>
     </Menu>
   );
 };

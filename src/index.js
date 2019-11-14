@@ -25,11 +25,11 @@ const useAuthRedirect = (path = "/") => {
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        dispatch(setUser(user));
         history.push(path);
+        dispatch(setUser(user));
       } else {
-        dispatch(clearUser());
         history.push("/Login");
+        dispatch(clearUser());
       }
     });
   }, []); //eslint-disable-line
