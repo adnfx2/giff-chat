@@ -1,7 +1,8 @@
 /* action types*/
 export const SET_USER = "SET_USER";
 export const CLEAR_USER = "CLEAR_USER";
-export const LOAD_CHANNELS = "LOAD_CHANNELS";
+export const LOAD_CHANNEL = "LOAD_CHANNEL";
+export const SET_CHANNEL = "SET_CHANNEL";
 
 /* action creator */
 export const setUser = user => ({
@@ -13,7 +14,12 @@ export const clearUser = () => ({
   type: CLEAR_USER
 });
 
-export const loadChannels = channel => ({
-  type: LOAD_CHANNELS,
-  channel
+export const loadChannel = incommingChannel => ({
+  type: LOAD_CHANNEL,
+  incommingChannel
+});
+
+export const setChannel = channelId => ({
+  type: SET_CHANNEL,
+  channelId
 });

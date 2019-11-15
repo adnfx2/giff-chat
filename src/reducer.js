@@ -8,11 +8,10 @@ const initialUserState = {
 };
 
 const userData = (state = initialUserState, action) => {
-  const { type, payload } = action;
-  switch (type) {
+  switch (action.type) {
     case actionTypes.SET_USER:
       return {
-        currentUser: payload.currentUser,
+        currentUser: action.payload.currentUser,
         isLoading: false
       };
     case actionTypes.CLEAR_USER:
@@ -25,11 +24,24 @@ const userData = (state = initialUserState, action) => {
   }
 };
 
-const channels = (state = [], action) => {
-  if (action.type === actionTypes.LOAD_CHANNELS) {
-    return [...state, action.channel];
+const initialChannelState = {
+  selectedChannel: "",
+  loadedChannels: []
+};
+
+const channels = (state = initialChannelState, action) => {
+  switch (action.type) {
+    case actionTypes.LOAD_CHANNEL:
+      const { loadedChannels } = state;
+      return {
+        ...state,
+        loadedChannels: [...loadedChannels, action.incommingChannel]
+      };
+    case actionTypes.SET_CHANNEL:
+      return { ...state, selectedChannel: action.channelId };
+    default:
+      return state;
   }
-  return state;
 };
 
 const rootReducer = combineReducers({
