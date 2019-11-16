@@ -13,7 +13,7 @@ const useStyle = createUseStyles({
 });
 
 const useFirebaseDB = reference => {
-  return useState(firebase.database().ref("channels"));
+  return useState(firebase.database().ref(reference));
 };
 
 const useLoadChannels = channelsRef => {
@@ -30,33 +30,34 @@ const useLoadChannels = channelsRef => {
   }, []); //eslint-disable-line
 };
 
-const useCreateSetChannel = () => {
+const useChannelController = () => {
   const dispatch = useDispatch();
-  return channelId => dispatch(setChannel(channelId));
-};
-
-const useSelectChannel = () => {
   const { selectedChannel, loadedChannels } = useSelector(
     state => state.channels
   );
 
-  let selection;
+  useEffect(() => {
+    if (!selectedChannel && loadedChannels.length > 0) {
+      dispatch(setChannel(loadedChannels[0].id));
+    }
+  }, [selectedChannel, loadedChannels, dispatch]);
 
-  if (selectedChannel) {
-    selection = selectedChannel;
-  } else if (loadedChannels.length > 0) {
-    selection = loadedChannels[0].id;
-  }
-
-  return [selection, loadedChannels];
+  return {
+    selectedChannel,
+    loadedChannels,
+    setChannel: channelId => dispatch(setChannel(channelId))
+  };
 };
 
 const Channels = ({ currentUser }) => {
   const [toggleModalChannel, setToggleModalChannel] = useState(false);
   const [channelsRef] = useFirebaseDB("channels");
-  const [selectedChannel, channels] = useSelectChannel();
   const styles = useStyle();
-  const setChannel = useCreateSetChannel();
+  const {
+    selectedChannel,
+    setChannel,
+    loadedChannels: channels
+  } = useChannelController();
   useLoadChannels(channelsRef);
 
   return (
