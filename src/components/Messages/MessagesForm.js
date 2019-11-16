@@ -29,8 +29,6 @@ const MessagesForm = ({ messagesRef }) => {
     user: userData.currentUser,
     channelId: channels.selectedChannel
   }));
-  console.log({ channelId });
-  console.log({ user: user });
   const onChangeHandler = e => setMessage(e.target.value);
   const sendMessage = () => {
     if (message) {

@@ -44,8 +44,26 @@ const channels = (state = initialChannelState, action) => {
   }
 };
 
+const initialMessagesState = {
+  loadedMessages: []
+};
+
+const messages = (state = initialMessagesState, action) => {
+  switch (action.type) {
+    case actionTypes.LOAD_MESSAGE:
+      const { loadedMessages } = state;
+      return {
+        ...state,
+        loadedMessages: [...loadedMessages, action.incommingMessage]
+      };
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   userData,
-  channels
+  channels,
+  messages
 });
 export default rootReducer;

@@ -22,7 +22,6 @@ const useLoadChannels = channelsRef => {
   useEffect(() => {
     channelsRef.on("child_added", snap => {
       const channel = snap.val();
-      console.log(channel);
       dispatch(loadChannel(channel));
     });
 
