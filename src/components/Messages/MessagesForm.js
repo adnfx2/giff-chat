@@ -32,6 +32,8 @@ const MessagesForm = ({ messagesRef }) => {
     channelId: channels.selectedChannel
   }));
 
+  const uploadFile = (file, metadata) => console.log({ file, metadata });
+
   const openModal = () => setToggleFileModal(true);
 
   const closeModal = () => setToggleFileModal(false);
@@ -102,7 +104,11 @@ const MessagesForm = ({ messagesRef }) => {
           />
         </Button.Group>
       </Segment>
-      <FileModal modal={toggleFileModal} closeModal={closeModal} />
+      <FileModal
+        modal={toggleFileModal}
+        closeModal={closeModal}
+        uploadFile={uploadFile}
+      />
     </React.Fragment>
   );
 };
