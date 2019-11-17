@@ -3,6 +3,7 @@ import { Segment, Button, Input } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
 import { useSelector } from "react-redux";
 import firebase from "../../firebase/firebase";
+import FileModal from "../FileModal/FileModal";
 
 const useStyle = createUseStyles({
   messages__form: {
@@ -21,6 +22,7 @@ const useStyle = createUseStyles({
 });
 
 const MessagesForm = ({ messagesRef }) => {
+  const [toggleFileModal, setToggleFileModal] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState([]);
@@ -29,7 +31,13 @@ const MessagesForm = ({ messagesRef }) => {
     user: userData.currentUser,
     channelId: channels.selectedChannel
   }));
+
+  const openModal = () => setToggleFileModal(true);
+
+  const closeModal = () => setToggleFileModal(false);
+
   const onChangeHandler = e => setMessage(e.target.value);
+
   const sendMessage = () => {
     if (message) {
       setLoading(true);
@@ -42,7 +50,6 @@ const MessagesForm = ({ messagesRef }) => {
           setLoading(false);
         })
         .catch(e => {
-          console.log(e);
           setLoading(false);
           setErrors(prevErrors => [...prevErrors, e]);
         });
@@ -64,35 +71,39 @@ const MessagesForm = ({ messagesRef }) => {
   };
 
   return (
-    <Segment className={styles.messages__form}>
-      <Input
-        fluid
-        onChange={onChangeHandler}
-        name="message"
-        className={styles.messages__input}
-        label={<Button icon="add" />}
-        labelPosition="left"
-        placeholder="Write your message"
-        value={message}
-        error={errors.some(error => error.message.includes("message"))}
-      />
-      <Button.Group icon widths="2">
-        <Button
-          color="orange"
-          content="Add reply"
+    <React.Fragment>
+      <Segment className={styles.messages__form}>
+        <Input
+          fluid
+          onChange={onChangeHandler}
+          name="message"
+          className={styles.messages__input}
+          label={<Button icon="add" />}
           labelPosition="left"
-          icon="edit"
-          disabled={loading}
-          onClick={sendMessage}
+          placeholder="Write your message"
+          value={message}
+          error={errors.some(error => error.message.includes("message"))}
         />
-        <Button
-          color="teal"
-          content="Upload Media"
-          labelPosition="right"
-          icon="cloud upload"
-        />
-      </Button.Group>
-    </Segment>
+        <Button.Group icon widths="2">
+          <Button
+            color="orange"
+            content="Add reply"
+            labelPosition="left"
+            icon="edit"
+            disabled={loading}
+            onClick={sendMessage}
+          />
+          <Button
+            color="teal"
+            content="Upload Media"
+            labelPosition="right"
+            icon="cloud upload"
+            onClick={openModal}
+          />
+        </Button.Group>
+      </Segment>
+      <FileModal modal={toggleFileModal} closeModal={closeModal} />
+    </React.Fragment>
   );
 };
 
