@@ -20,8 +20,9 @@ export const loadChannel = incommingChannel => ({
   incommingChannel
 });
 
-export const loadMessage = incommingMessage => ({
+export const loadMessage = (incommingMessage, channelId) => ({
   type: LOAD_MESSAGE,
+  channelId,
   incommingMessage
 });
 

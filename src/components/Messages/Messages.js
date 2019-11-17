@@ -12,9 +12,8 @@ const useFirebaseDB = reference => {
   return useState(firebase.database().ref(reference));
 };
 
-const useLoadMessage = messagesRef => {
+const useLoadMessage = (messagesRef, channelId) => {
   const dispatch = useDispatch();
-  const channelId = useSelector(state => state.channels.selectedChannel);
 
   useEffect(() => {
     console.log(
@@ -23,9 +22,11 @@ const useLoadMessage = messagesRef => {
       }`
     );
     if (channelId) {
+      let messages = [];
       messagesRef.child(channelId).on("child_added", snap => {
         const message = snap.val();
-        dispatch(loadMessage(message));
+        messages = [...messages, message];
+        dispatch(loadMessage(messages, channelId));
       });
 
       return () => messagesRef.off();
@@ -43,12 +44,19 @@ const useStyle = createUseStyles({
 const Messages = ({ channels }) => {
   const [messagesRef] = useFirebaseDB("messages");
   const styles = useStyle();
-  const { messages, user } = useSelector(state => ({
-    messages: state.messages.loadedMessages,
-    user: state.userData.currentUser
-  }));
-
-  useLoadMessage(messagesRef);
+  const { channelId, messages, user } = useSelector(
+    ({ userData, channels, messages }) => {
+      const channelId = channels.selectedChannel;
+      const _messages = messages.loadedMessages[channelId] || [];
+      return {
+        channelId,
+        messages: _messages,
+        user: userData.currentUser
+      };
+    }
+  );
+  console.log({ channelId, messages, user });
+  useLoadMessage(messagesRef, channelId);
 
   return (
     <React.Fragment>

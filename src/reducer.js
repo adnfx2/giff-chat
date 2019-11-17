@@ -45,16 +45,21 @@ const channels = (state = initialChannelState, action) => {
 };
 
 const initialMessagesState = {
-  loadedMessages: []
+  loadedMessages: {}
 };
 
 const messages = (state = initialMessagesState, action) => {
   switch (action.type) {
     case actionTypes.LOAD_MESSAGE:
       const { loadedMessages } = state;
+      const { channelId, incommingMessage } = action;
+
       return {
         ...state,
-        loadedMessages: [...loadedMessages, action.incommingMessage]
+        loadedMessages: {
+          ...loadedMessages,
+          [channelId]: incommingMessage
+        }
       };
     default:
       return state;
