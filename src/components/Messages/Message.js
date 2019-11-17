@@ -1,5 +1,5 @@
 import React from "react";
-import { Comment } from "semantic-ui-react";
+import { Comment, Image } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
 import moment from "moment";
 
@@ -8,7 +8,10 @@ const useStyle = createUseStyles({
     borderLeft: "2px solid orange",
     paddingLeft: 8,
     color: "red"
-  })
+  }),
+  message__image: {
+    padding: "1em"
+  }
 });
 
 const timeFromNow = timestamp => moment(timestamp).fromNow();
@@ -23,7 +26,12 @@ const Message = ({ message, user }) => {
       <Comment.Content className={styles.message}>
         <Comment.Author as="a">{message.user.name}</Comment.Author>
         <Comment.Metadata>{timeFromNow(message.timestamp)}</Comment.Metadata>
-        <Comment.Text>{message.content}</Comment.Text>
+        {//prettier-ignore
+        message.image
+         ? <Image src={message.image} className={styles.message__image}/>
+         : message.content
+          ? <Comment.Text>{message.content}</Comment.Text> 
+          : 'something went wrong!'}
       </Comment.Content>
     </Comment>
   );
