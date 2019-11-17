@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import uuidv4 from "uuid/v4";
 import firebase from "../../firebase/firebase";
 import FileModal from "../FileModal/FileModal";
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 const useStyle = createUseStyles({
   messages__form: {
@@ -161,6 +162,10 @@ const MessagesForm = ({ messagesRef }) => {
             onClick={openModal}
           />
         </Button.Group>
+        <ProgressBar
+          uploadState={uploadState}
+          percentUploaded={percentUploaded}
+        />
       </Segment>
       <FileModal
         modal={toggleFileModal}
