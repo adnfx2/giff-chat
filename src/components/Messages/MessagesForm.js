@@ -159,6 +159,7 @@ const MessagesForm = ({ messagesRef }) => {
             content="Upload Media"
             labelPosition="right"
             icon="cloud upload"
+            disabled={uploadState === "uploading"}
             onClick={openModal}
           />
         </Button.Group>

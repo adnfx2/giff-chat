@@ -23,10 +23,12 @@ const useLoadMessage = (messagesRef, channelId) => {
     );
     if (channelId) {
       let messages = [];
+      let uniqueUsers = {};
       messagesRef.child(channelId).on("child_added", snap => {
         const message = snap.val();
         messages = [...messages, message];
-        dispatch(loadMessage(messages, channelId));
+        uniqueUsers = { ...uniqueUsers, [message.user.id]: message.user };
+        dispatch(loadMessage(messages, channelId, uniqueUsers));
       });
 
       return () => messagesRef.off();
@@ -41,32 +43,39 @@ const useStyle = createUseStyles({
   }
 });
 
-const Messages = ({ channels }) => {
+const Messages = () => {
   const [messagesRef] = useFirebaseDB("messages");
   const styles = useStyle();
-  const { channelId, messages, user } = useSelector(
+  const { channels, messages, user, members } = useSelector(
     ({ userData, channels, messages }) => {
-      const channelId = channels.selectedChannel;
-      const _messages = messages.loadedMessages[channelId] || [];
+      const { selectedChannel } = channels;
+      const messagesOfSelectedChannel =
+        messages.byChannelId[selectedChannel.id];
+      let allMessages = [];
+      let allMembers = {};
+      if (selectedChannel && messagesOfSelectedChannel) {
+        allMessages = messagesOfSelectedChannel.messages;
+        allMembers = messagesOfSelectedChannel.members;
+      }
+
       return {
-        channelId,
-        messages: _messages,
+        channels,
+        messages: allMessages,
+        members: allMembers,
         user: userData.currentUser
       };
     }
   );
-  console.log({ channelId, messages, user });
-  useLoadMessage(messagesRef, channelId);
+  useLoadMessage(messagesRef, channels.selectedChannel.id);
 
   return (
     <React.Fragment>
-      <MessagesHeader />
+      <MessagesHeader channel={channels.selectedChannel} members={members} />
       <Segment>
         <Comment.Group className={styles.messages}>
-          {console.log(messages) ||
-            messages.map(message => (
-              <Message key={message.timestamp} message={message} user={user} />
-            ))}
+          {messages.map(message => (
+            <Message key={message.timestamp} message={message} user={user} />
+          ))}
         </Comment.Group>
       </Segment>
       <MessagesForm messagesRef={messagesRef} />

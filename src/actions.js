@@ -20,13 +20,14 @@ export const loadChannel = incommingChannel => ({
   incommingChannel
 });
 
-export const loadMessage = (incommingMessage, channelId) => ({
+export const loadMessage = (incommingMessages, channelId, uniqueUsers) => ({
   type: LOAD_MESSAGE,
   channelId,
-  incommingMessage
+  incommingMessages,
+  uniqueUsers
 });
 
-export const setChannel = channelId => ({
+export const setChannel = channel => ({
   type: SET_CHANNEL,
-  channelId
+  channel
 });

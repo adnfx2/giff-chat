@@ -37,14 +37,14 @@ const useChannelController = () => {
 
   useEffect(() => {
     if (!selectedChannel && loadedChannels.length > 0) {
-      dispatch(setChannel(loadedChannels[0].id));
+      dispatch(setChannel(loadedChannels[0]));
     }
   }, [selectedChannel, loadedChannels, dispatch]);
 
   return {
     selectedChannel,
     loadedChannels,
-    setChannel: channelId => dispatch(setChannel(channelId))
+    setChannel: channel => dispatch(setChannel(channel))
   };
 };
 
@@ -73,9 +73,9 @@ const Channels = ({ currentUser }) => {
           ? channels.map(channel => (
               <Menu.Item
                 key={channel.id}
-                onClick={() => setChannel(channel.id)}
+                onClick={() => setChannel(channel)}
                 name={channel.name}
-                active={selectedChannel === channel.id}
+                active={selectedChannel.id === channel.id}
               >
                 # {channel.name}
               </Menu.Item>

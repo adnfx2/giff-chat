@@ -1,15 +1,20 @@
 import React from "react";
 import { Header, Segment, Input, Icon } from "semantic-ui-react";
 
-const MessagesHeader = props => {
+const MessagesHeader = ({ channel, members }) => {
+  const membersCount = Object.keys(members).length;
+  const totalMembers = `${membersCount} ${
+    membersCount === 1 ? "User" : "Users"
+  }`;
+
   return (
     <Segment clearing>
       <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }}>
         <span>
-          Channel
+          {channel ? channel.name : "NoChannel"}
           <Icon name={"star outline"} color="black" />
         </span>
-        <Header.Subheader>2 Users</Header.Subheader>
+        <Header.Subheader>{totalMembers}</Header.Subheader>
       </Header>
       <Header floated="right">
         <Input
