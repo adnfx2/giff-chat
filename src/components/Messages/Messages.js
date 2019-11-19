@@ -44,6 +44,8 @@ const useStyle = createUseStyles({
 });
 
 const Messages = () => {
+  const [searchResults, setSearchResults] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
   const [messagesRef] = useFirebaseDB("messages");
   const styles = useStyle();
   const { channels, messages, user, members } = useSelector(
@@ -68,12 +70,39 @@ const Messages = () => {
   );
   useLoadMessage(messagesRef, channels.selectedChannel.id);
 
+  const searchHandler = event => {
+    setSearchLoading(true);
+    const searchTerm = event.target.value;
+    const _messages = messages.slice();
+    const regex = new RegExp(searchTerm, "gi");
+    const _searchResults =
+      searchTerm &&
+      _messages.reduce((acc, message) => {
+        if (
+          message.content &&
+          (message.content.match(regex) || message.user.name.match(regex))
+        ) {
+          acc.push(message);
+        }
+        return acc;
+      }, []);
+    setSearchResults(_searchResults);
+    setTimeout(() => setSearchLoading(false), 1000);
+  };
+
+  const finalMessages = searchResults || messages;
+
   return (
     <React.Fragment>
-      <MessagesHeader channel={channels.selectedChannel} members={members} />
+      <MessagesHeader
+        channel={channels.selectedChannel}
+        members={members}
+        searchHandler={searchHandler}
+        searchLoading={searchLoading}
+      />
       <Segment>
         <Comment.Group className={styles.messages}>
-          {messages.map(message => (
+          {finalMessages.map(message => (
             <Message key={message.timestamp} message={message} user={user} />
           ))}
         </Comment.Group>
