@@ -35,7 +35,7 @@ const MessagesForm = ({ messagesRef }) => {
   const styles = useStyle();
   const { user, channelId } = useSelector(({ userData, channels }) => ({
     user: userData.currentUser,
-    channelId: channels.selectedChannel
+    channelId: channels.selectedChannel.id
   }));
 
   useEffect(() => {
