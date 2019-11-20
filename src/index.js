@@ -25,8 +25,8 @@ const useAuthRedirect = (path = "/") => {
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        history.push(path);
         dispatch(setUser(user));
+        history.push(path);
       } else {
         history.push("/Login");
         dispatch(clearUser());
