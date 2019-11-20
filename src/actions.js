@@ -4,6 +4,7 @@ export const CLEAR_USER = "CLEAR_USER";
 export const SET_CHANNEL = "SET_CHANNEL";
 export const LOAD_CHANNEL = "LOAD_CHANNEL";
 export const LOAD_MESSAGE = "LOAD_MESSAGE";
+export const LOAD_USERS = "LOAD_USERS";
 
 /* action creator */
 export const setUser = user => ({
@@ -30,4 +31,9 @@ export const loadMessage = (incommingMessages, channelId, uniqueUsers) => ({
 export const setChannel = channel => ({
   type: SET_CHANNEL,
   channel
+});
+
+export const loadUsers = users => ({
+  type: LOAD_USERS,
+  users
 });
