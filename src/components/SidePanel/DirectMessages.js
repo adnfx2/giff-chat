@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Menu, Icon } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
-import { loadUsers } from "../../actions";
+import { loadUsers, setChannel } from "../../actions";
 import firebase from "../../firebase/firebase";
 
 const useStyle = createUseStyles({
@@ -84,6 +84,21 @@ const DirectMessages = ({ currentUser }) => {
     }, []);
     dispatch(loadUsers(updatedUsers));
   };
+
+  const changeChannel = user => {
+    const channelId =
+      user < currentUser.uid
+        ? `${user.id}/${currentUser.uid}`
+        : `${currentUser.uid}/${user.id}`;
+
+    const channelData = {
+      id: channelId,
+      name: user.name
+    };
+
+    dispatch(setChannel(channelData, true));
+  };
+
   useLoadUsers(usersRef, connectedRef, presenceRef, currentUser, addStatusUser);
 
   return (
@@ -97,7 +112,7 @@ const DirectMessages = ({ currentUser }) => {
       {users.map(user => (
         <Menu.Item
           key={user.uid}
-          onClick={() => console.log(user.uid)}
+          onClick={() => changeChannel(user)}
           className={styles.dm__item}
         >
           <Icon

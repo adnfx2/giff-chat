@@ -28,9 +28,10 @@ export const loadMessage = (incommingMessages, channelId, uniqueUsers) => ({
   uniqueUsers
 });
 
-export const setChannel = channel => ({
+export const setChannel = (channel, privateChannel = false) => ({
   type: SET_CHANNEL,
-  channel
+  channel,
+  privateChannel
 });
 
 export const loadUsers = users => ({

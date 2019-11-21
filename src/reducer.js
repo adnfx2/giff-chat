@@ -26,6 +26,7 @@ const userData = (state = initialUserState, action) => {
 
 const initialChannelState = {
   selectedChannel: "",
+  privateChannel: false,
   loadedChannels: []
 };
 
@@ -38,7 +39,11 @@ const channels = (state = initialChannelState, action) => {
         loadedChannels: [...loadedChannels, action.incommingChannel]
       };
     case actionTypes.SET_CHANNEL:
-      return { ...state, selectedChannel: action.channel };
+      return {
+        ...state,
+        selectedChannel: action.channel,
+        privateChannel: action.privateChannel
+      };
     default:
       return state;
   }

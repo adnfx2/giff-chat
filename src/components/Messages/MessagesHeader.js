@@ -14,7 +14,9 @@ const MessagesHeader = ({ channel, members, searchHandler, searchLoading }) => {
           {channel ? channel.name : "NoChannel"}
           <Icon name={"star outline"} color="black" />
         </span>
-        <Header.Subheader>{totalMembers}</Header.Subheader>
+        <Header.Subheader>
+          {membersCount > 0 ? totalMembers : ""}
+        </Header.Subheader>
       </Header>
       <Header floated="right">
         <Input
