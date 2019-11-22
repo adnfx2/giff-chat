@@ -67,12 +67,20 @@ const useLoadUsers = (
   }, []); //eslint-disable-line
 };
 
+const getChannelId = (currentUser, user) =>
+  user < currentUser.uid
+    ? `${user.uid}/${currentUser.uid}`
+    : `${currentUser.uid}/${user.uid}`;
+
 const DirectMessages = ({ currentUser }) => {
   const styles = useStyle();
   const [usersRef] = useFirebaseDB("users");
   const [connectedRef] = useFirebaseDB(".info/connected");
   const [presenceRef] = useFirebaseDB("presence");
-  const users = useSelector(state => state.users);
+  const { users, selectedChannel } = useSelector(state => ({
+    users: state.users,
+    selectedChannel: state.channels.selectedChannel
+  }));
   const dispatch = useDispatch();
 
   const addStatusUser = (userId, connected = true) => {
@@ -86,10 +94,7 @@ const DirectMessages = ({ currentUser }) => {
   };
 
   const changeChannel = user => {
-    const channelId =
-      user < currentUser.uid
-        ? `${user.id}/${currentUser.uid}`
-        : `${currentUser.uid}/${user.id}`;
+    const channelId = getChannelId(currentUser, user);
 
     const channelData = {
       id: channelId,
@@ -114,6 +119,7 @@ const DirectMessages = ({ currentUser }) => {
           key={user.uid}
           onClick={() => changeChannel(user)}
           className={styles.dm__item}
+          active={selectedChannel.id === getChannelId(currentUser, user)}
         >
           <Icon
             name="circle"

@@ -23,7 +23,7 @@ const useStyle = createUseStyles({
   }
 });
 
-const MessagesForm = ({ messagesRef }) => {
+const MessagesForm = ({ messagesRef, isPrivateChannel }) => {
   const [storageRef, setStorageRef] = useState(firebase.storage().ref());
   const [uploadState, setUploadState] = useState("");
   const [uploadTask, setUploadTask] = useState();
@@ -85,8 +85,8 @@ const MessagesForm = ({ messagesRef }) => {
   };
 
   const uploadFile = (file, metadata) => {
-    const filePath = `chat/public/${uuidv4()}.jpg`;
-
+    const firebasePath = isPrivateChannel ? "chat/private" : "chat/public";
+    const filePath = `${firebasePath}/${uuidv4()}.jpg`;
     setUploadState("uploading");
     setUploadTask(storageRef.child(filePath).put(file, metadata));
   };

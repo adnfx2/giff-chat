@@ -47,6 +47,7 @@ const Messages = () => {
   const [searchResults, setSearchResults] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [messagesRef] = useFirebaseDB("messages");
+  const [privateMessagesRef] = useFirebaseDB("privateMessages");
   const styles = useStyle();
   const { channels, messages, user, members } = useSelector(
     ({ userData, channels, messages }) => {
@@ -68,7 +69,12 @@ const Messages = () => {
       };
     }
   );
-  useLoadMessage(messagesRef, channels.selectedChannel.id);
+
+  const finalMessagesRef = channels.privateChannel
+    ? privateMessagesRef
+    : messagesRef;
+
+  useLoadMessage(finalMessagesRef, channels.selectedChannel.id);
 
   const searchHandler = event => {
     setSearchLoading(true);
@@ -96,6 +102,7 @@ const Messages = () => {
     <React.Fragment>
       <MessagesHeader
         channel={channels.selectedChannel}
+        isPrivateChannel={channels.privateChannel}
         members={members}
         searchHandler={searchHandler}
         searchLoading={searchLoading}
@@ -107,7 +114,10 @@ const Messages = () => {
           ))}
         </Comment.Group>
       </Segment>
-      <MessagesForm messagesRef={messagesRef} />
+      <MessagesForm
+        messagesRef={finalMessagesRef}
+        isPrivateChannel={channels.privateChannel}
+      />
     </React.Fragment>
   );
 };
