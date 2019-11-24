@@ -5,6 +5,7 @@ import { createUseStyles } from "react-jss";
 import ModalChannel from "../../components/ModalChannel/ModalChannel";
 import { loadChannel, setChannel } from "../../actions";
 import firebase from "../../firebase/firebase";
+import ChannelItem from "./ChannelItem";
 
 const useStyle = createUseStyles({
   channels: {
@@ -16,7 +17,7 @@ const useFirebaseDB = reference => {
   return useState(firebase.database().ref(reference));
 };
 
-const useLoadChannels = channelsRef => {
+const useLoadChannels = (channelsRef, selectedChannel) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -57,7 +58,7 @@ const Channels = ({ currentUser }) => {
     setChannel,
     loadedChannels: channels
   } = useChannelController();
-  useLoadChannels(channelsRef);
+  useLoadChannels(channelsRef, selectedChannel);
 
   return (
     <React.Fragment>
@@ -71,14 +72,7 @@ const Channels = ({ currentUser }) => {
         </Menu.Item>
         {channels.length > 0
           ? channels.map(channel => (
-              <Menu.Item
-                key={channel.id}
-                onClick={() => setChannel(channel)}
-                name={channel.name}
-                active={selectedChannel.id === channel.id}
-              >
-                # {channel.name}
-              </Menu.Item>
+              <ChannelItem key={channel.id} channel={channel} />
             ))
           : ""}
       </Menu.Menu>

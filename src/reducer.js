@@ -83,11 +83,21 @@ const users = (state = [], action) => {
   }
 };
 
+const notifications = (state = {}, action) => {
+  switch (action.type) {
+    case actionTypes.SET_NOTIFICATIONS:
+      return action.notifications;
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   userData,
   channels,
   messages,
-  users
+  users,
+  notifications
 });
 
 export default rootReducer;
