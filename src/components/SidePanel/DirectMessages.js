@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Menu, Icon } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
-import { loadUsers, setChannel } from "../../actions";
+import { loadUsers, updateUser, setChannel } from "../../actions";
 import firebase from "../../firebase/firebase";
 
 const useStyle = createUseStyles({
@@ -19,13 +19,7 @@ const useFirebaseDB = reference => {
   return useState(firebase.database().ref(reference));
 };
 
-const useLoadUsers = (
-  usersRef,
-  connectedRef,
-  presenceRef,
-  currentUser,
-  addStatusUser
-) => {
+const useLoadUsers = (usersRef, connectedRef, presenceRef, currentUser) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,6 +34,7 @@ const useLoadUsers = (
     });
 
     connectedRef.on("value", snap => {
+      console.log("read value", snap.numChildren());
       if (snap.val() === true) {
         const ref = presenceRef.child(currentUser.uid);
         ref.set(true);
@@ -52,14 +47,16 @@ const useLoadUsers = (
     });
 
     presenceRef.on("child_added", snap => {
+      console.log("child added");
       if (currentUser.uid !== snap.key) {
-        addStatusUser(snap.key);
+        dispatch(updateUser(snap.key));
       }
     });
 
     presenceRef.on("child_removed", snap => {
+      console.log("child removed");
       if (currentUser.uid !== snap.key) {
-        addStatusUser(snap.key, false);
+        dispatch(updateUser(snap.key, false));
       }
     });
 
@@ -83,16 +80,6 @@ const DirectMessages = ({ currentUser }) => {
   }));
   const dispatch = useDispatch();
 
-  const addStatusUser = (userId, connected = true) => {
-    const updatedUsers = users.reduce((acc, user) => {
-      if (user.uid === userId) {
-        user.status = `${connected ? "online" : "offline"}`;
-      }
-      return acc.concat(user);
-    }, []);
-    dispatch(loadUsers(updatedUsers));
-  };
-
   const changeChannel = user => {
     const channelId = getChannelId(currentUser, user);
 
@@ -104,7 +91,7 @@ const DirectMessages = ({ currentUser }) => {
     dispatch(setChannel(channelData, true));
   };
 
-  useLoadUsers(usersRef, connectedRef, presenceRef, currentUser, addStatusUser);
+  useLoadUsers(usersRef, connectedRef, presenceRef, currentUser);
 
   return (
     <Menu.Menu className={styles.dm}>

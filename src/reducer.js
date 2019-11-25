@@ -74,12 +74,18 @@ const messages = (state = initialMessagesState, action) => {
   }
 };
 
-const users = (state = [], action) => {
+const users = (users = [], action) => {
   switch (action.type) {
     case actionTypes.LOAD_USERS:
       return action.users;
+    case actionTypes.UPDATE_USER:
+      return users.map(user =>
+        user.uid === action.userId
+          ? { ...user, status: action.connected ? "online" : "offline" }
+          : user
+      );
     default:
-      return state;
+      return users;
   }
 };
 

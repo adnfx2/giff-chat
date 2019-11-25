@@ -5,6 +5,7 @@ export const SET_CHANNEL = "SET_CHANNEL";
 export const LOAD_CHANNEL = "LOAD_CHANNEL";
 export const LOAD_MESSAGE = "LOAD_MESSAGE";
 export const LOAD_USERS = "LOAD_USERS";
+export const UPDATE_USER = "UPDATE_USER";
 export const SET_NOTIFICATIONS = "SET_NOTIFICATIONS";
 
 /* action creator */
@@ -38,6 +39,12 @@ export const setChannel = (channel, privateChannel = false) => ({
 export const loadUsers = users => ({
   type: LOAD_USERS,
   users
+});
+
+export const updateUser = (userId, connected = true) => ({
+  type: UPDATE_USER,
+  userId,
+  connected
 });
 
 export const setNotifications = notifications => ({
