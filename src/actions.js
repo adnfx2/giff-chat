@@ -7,6 +7,7 @@ export const LOAD_MESSAGE = "LOAD_MESSAGE";
 export const LOAD_USERS = "LOAD_USERS";
 export const UPDATE_USER = "UPDATE_USER";
 export const SET_NOTIFICATIONS = "SET_NOTIFICATIONS";
+export const TOGGLE_STAR = "TOGGLE_STAR";
 
 /* action creator */
 export const setUser = user => ({
@@ -50,4 +51,9 @@ export const updateUser = (userId, connected = true) => ({
 export const setNotifications = notifications => ({
   type: SET_NOTIFICATIONS,
   notifications
+});
+
+export const toggleStar = channelId => ({
+  type: TOGGLE_STAR,
+  channelId
 });

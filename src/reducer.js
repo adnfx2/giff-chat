@@ -98,6 +98,8 @@ const notifications = (state = {}, action) => {
   }
 };
 
+const starredChannels = (starredChannels = {}, action) => {};
+
 const rootReducer = combineReducers({
   userData,
   channels,

@@ -12,6 +12,35 @@ const useFirebaseDB = reference => {
   return useState(firebase.database().ref(reference));
 };
 
+const useStarredListener = (usersRef, channelId, currentUserId) => {
+  const [starredChannel, setStarredChannel] = useState(false);
+
+  useEffect(() => {
+    console.log({ channelId });
+    if (!channelId) return;
+
+    usersRef
+      .child(currentUserId)
+      .child("starred")
+      .once("value")
+      .then(data => {
+        console.log("running starred", data.val());
+        if (data.val() !== null) {
+          const channelIds = Object.keys(data.val());
+          const prevStarred = channelIds.includes(channelId);
+          console.log({ channelId });
+          setStarredChannel(
+            prevState =>
+              console.log({ channelIds, prevStarred, prevState, channelId }) ||
+              prevStarred
+          );
+        }
+      });
+  }, [channelId]); //eslint-disable-line
+
+  return [starredChannel, setStarredChannel];
+};
+
 const useLoadMessage = (messagesRef, channelId) => {
   const dispatch = useDispatch();
 
@@ -46,6 +75,7 @@ const useStyle = createUseStyles({
 const Messages = () => {
   const [searchResults, setSearchResults] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
+  const [usersRef] = useFirebaseDB("users");
   const [messagesRef] = useFirebaseDB("messages");
   const [privateMessagesRef] = useFirebaseDB("privateMessages");
   const styles = useStyle();
@@ -98,14 +128,23 @@ const Messages = () => {
 
   const finalMessages = searchResults || messages;
 
+  const [starredChannel, setStarredChannel] = useStarredListener(
+    usersRef,
+    channels.selectedChannel.id,
+    user.uid
+  );
+
   return (
     <React.Fragment>
       <MessagesHeader
+        starredChannel={starredChannel}
+        setStarredChannel={setStarredChannel}
         channel={channels.selectedChannel}
         isPrivateChannel={channels.privateChannel}
         members={members}
         searchHandler={searchHandler}
         searchLoading={searchLoading}
+        currentUser={user}
       />
       <Segment>
         <Comment.Group className={styles.messages}>

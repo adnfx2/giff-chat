@@ -4,6 +4,7 @@ import { createUseStyles } from "react-jss";
 import UserPanel from "./UserPanel";
 import Channels from "./Channels";
 import DirectMessages from "./DirectMessages";
+import Starred from "./Starred";
 
 const useStyle = createUseStyles({
   sidePanel: {
@@ -25,6 +26,7 @@ const SidePanel = ({ currentUser }) => {
       className={styles.sidePanel}
     >
       <UserPanel currentUser={currentUser} />
+      <Starred currentUser={currentUser} />
       <Channels currentUser={currentUser} />
       <DirectMessages currentUser={currentUser} />
     </Menu>
