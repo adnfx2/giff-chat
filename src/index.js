@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import App from "./layout/App/App";
 import Login from "./components/Login/Login";
@@ -11,53 +11,25 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import "semantic-ui-css/semantic.min.css";
-import { createStore } from "redux";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import { Provider, useSelector } from "react-redux";
+import createSagaMiddleware from "redux-saga";
 import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducer";
-import { setUser, clearUser } from "./actions";
-import firebase from "./firebase/firebase";
+import rootSaga from "./saga";
 import Spinner from "./components/Spinner/Spinner";
 
-const useAuthRedirect = (path = "/") => {
-  const history = useHistory();
-  const dispatch = useDispatch();
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        dispatch(setUser(user));
-        history.push(path);
-      } else {
-        history.push("/Login");
-        dispatch(clearUser());
-      }
-    });
-  }, []); //eslint-disable-line
-};
+const sagaMiddleware = createSagaMiddleware();
 
-const store = createStore(rootReducer, composeWithDevTools());
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(sagaMiddleware))
+);
+
+sagaMiddleware.run(rootSaga);
+
 const Root = () => {
-  const isLoading = useSelector(({ userData }) => userData.isLoading);
-
-  useAuthRedirect();
-
-  if (isLoading) {
-    return <Spinner />;
-  } else {
-    return (
-      <Switch>
-        <Route exact path="/">
-          <App />
-        </Route>
-        <Route path="/login">
-          <Login />
-        </Route>
-        <Route path="/register">
-          <Register />
-        </Route>
-      </Switch>
-    );
-  }
+  return <Login />;
 };
 
 ReactDOM.render(

@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Grid,
   Form,
@@ -11,8 +12,8 @@ import {
 import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import firebase from "../../firebase/firebase";
 import { createUseStyles } from "react-jss";
+import { sagaActions } from "./saga";
 
 const useStyle = createUseStyles({
   container: {
@@ -49,6 +50,12 @@ const getValidationErrors = (errors, touched) => {
 
 const Login = props => {
   const styles = useStyle();
+  const dispatch = useDispatch();
+  const asyncErrorMessage = useSelector(({ auth }) => auth.asyncError);
+  console.log({ asyncErrorMessage: asyncErrorMessage ? true : false });
+  const handleOnSubmit = userCredentials => {
+    dispatch(sagaActions.loginSubmitted(userCredentials));
+  };
 
   return (
     <Grid
@@ -69,22 +76,7 @@ const Login = props => {
             password: ""
           }}
           validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting, setFieldError }) => {
-            return firebase
-              .auth()
-              .signInWithEmailAndPassword(values.email, values.password)
-              .then(signedUser => {
-                console.log(signedUser);
-              })
-              .catch(err => {
-                console.error(err);
-                if (err.code.toLowerCase().includes("auth")) {
-                  setFieldError("fromServer", "Invalid user/password");
-                } else {
-                  setFieldError("fromServer", err.message);
-                }
-              });
-          }}
+          onSubmit={handleOnSubmit}
         >
           {({
             values,
@@ -149,6 +141,11 @@ const Login = props => {
                       ))}
                     </Message.List>
                   </Message>
+                ) : (
+                  ""
+                )}
+                {asyncErrorMessage ? (
+                  <Message error>{asyncErrorMessage}</Message>
                 ) : (
                   ""
                 )}

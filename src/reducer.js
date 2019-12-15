@@ -1,6 +1,7 @@
 /* reducer */
 import * as actionTypes from "./actions.js";
 import { combineReducers } from "redux";
+import auth from "./components/Login/reducer";
 
 const initialUserState = {
   currentUser: null,
@@ -101,6 +102,7 @@ const notifications = (state = {}, action) => {
 const starredChannels = (starredChannels = {}, action) => {};
 
 const rootReducer = combineReducers({
+  auth,
   userData,
   channels,
   messages,
