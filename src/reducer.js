@@ -1,7 +1,7 @@
 /* reducer */
-import * as actionTypes from "./actions.js";
+import * as actionTypes from "./actions";
 import { combineReducers } from "redux";
-import auth from "./components/Login/reducer";
+import auth from "./authentication/reducer";
 
 const initialUserState = {
   currentUser: null,

@@ -13,7 +13,19 @@ var firebaseConfig = {
   appId: "1:190248205156:web:685336a2166037df16d871",
   measurementId: "G-ZTXCRYPR4Z"
 };
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+
+const createFirebaseRefs = referencesArray => {
+  if (Array.isArray(referencesArray)) {
+    const multipleRefs = referencesArray.reduce((acc, reference) => {
+      return { ...acc, [reference]: firebase.database().ref(reference) };
+    }, {});
+    return multipleRefs;
+  }
+};
+
+export const firebaseRefs = createFirebaseRefs(["users", "presence"]);
 
 export default firebase;

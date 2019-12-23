@@ -23,7 +23,7 @@ function* login({ userCredentials }) {
       userPassword
     );
     if (user) {
-      yield put(actions.loginSucceded(user));
+      yield put(actions.loginSucceded(user.user));
     } else {
       console.log("no user obtained");
     }

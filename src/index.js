@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import App from "./layout/App/App";
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
+import Register from "./components/Register";
+import Login from "./components/Login";
 import {
   BrowserRouter as Router,
   Switch,
@@ -29,6 +29,10 @@ const store = createStore(
 sagaMiddleware.run(rootSaga);
 
 const Root = () => {
+  const isLoadingApp = useSelector(({ auth }) => auth.user.isLoading);
+  if (isLoadingApp) {
+    return <Spinner />;
+  }
   return <Login />;
 };
 

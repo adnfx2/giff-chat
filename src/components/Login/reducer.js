@@ -17,29 +17,31 @@ const loginFailed = error => ({
 });
 
 const initialState = {
-  user: {},
   isLoading: false,
   asyncError: ""
 };
 
-const authReducer = (state = initialState, action) => {
+const loginReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_REQUESTED:
-      return { ...state, user: {}, isLoading: true };
+      return { ...state, isLoading: true, asyncError: "" };
+
     case LOGIN_SUCCEDED:
       if (!action.user) {
         return { ...state, isLoading: false };
       } else {
-        return { user: action.user, isLoading: false, asyncError: "" };
+        return initialState;
       }
+
     case LOGIN_FAILED:
-      return { user: {}, isLoading: false, asyncError: action.error };
+      return { isLoading: false, asyncError: action.error };
+
     default:
       return state;
   }
 };
 
-export default authReducer;
+export default loginReducer;
 
 export const actionTypes = {
   LOGIN_REQUESTED,
