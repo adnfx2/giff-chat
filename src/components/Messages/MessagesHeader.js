@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Header, Segment, Input, Icon } from "semantic-ui-react";
+import { Transition, Header, Segment, Input, Icon } from "semantic-ui-react";
 import { toggleStar } from "../../actions";
 import firebase from "../../firebase/firebase";
 
@@ -23,7 +23,8 @@ const MessagesHeader = ({
   searchHandler,
   searchLoading,
   isPrivateChannel,
-  currentUser
+  currentUser,
+  handleSearch
 }) => {
   const [usersRef] = useFirebaseDB("users");
   const membersCount = Object.keys(members).length;
@@ -61,10 +62,24 @@ const MessagesHeader = ({
   };
 
   return (
-    <Segment clearing>
-      <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }}>
-        <span>
-          {displayName(channel, isPrivateChannel)}
+    <Segment
+      fluid="true"
+      style={{
+        padding: 0
+      }}
+    >
+      <Header
+        fluid="true"
+        as="h3"
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          justifyContent: "space-between",
+          marginBottom: 0
+        }}
+      >
+        <span style={{ padding: "1em" }}>
+          {displayName(channel, isPrivateChannel)}{" "}
           {!isPrivateChannel && channel && (
             <Icon
               onClick={starHandler}
@@ -73,18 +88,17 @@ const MessagesHeader = ({
             />
           )}
         </span>
-        <Header.Subheader>
-          {membersCount > 0 ? totalMembers : ""}
-        </Header.Subheader>
-      </Header>
-      <Header floated="right">
-        <Input
-          loading={searchLoading}
-          onChange={searchHandler}
-          size="mini"
-          icon="search"
-          name="searchTerm"
-          placeholder="Search Messages"
+        <Icon
+          onClick={handleSearch}
+          name="search"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            padding: "1em",
+            fontSize: "0.9em"
+          }}
         />
       </Header>
     </Segment>
@@ -92,3 +106,16 @@ const MessagesHeader = ({
 };
 
 export default MessagesHeader;
+
+const x = (searchLoading, searchHandler) => (
+  <Header>
+    <Input
+      loading={searchLoading}
+      onChange={searchHandler}
+      size="mini"
+      icon="search"
+      name="searchTerm"
+      placeholder="Search Messages"
+    />
+  </Header>
+);

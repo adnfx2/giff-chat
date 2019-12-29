@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Segment, Comment } from "semantic-ui-react";
+import { Grid, Segment, Comment } from "semantic-ui-react";
 import MessagesHeader from "./MessagesHeader";
 import MessagesForm from "./MessagesForm";
+import SearchMessages from "./SearchMessages";
 import { createUseStyles } from "react-jss";
 import firebase from "../../firebase/firebase";
 import { useSelector, useDispatch } from "react-redux";
@@ -66,8 +67,15 @@ const useLoadMessage = (messagesRef, channelId) => {
 };
 
 const useStyle = createUseStyles({
-  messages: {
-    height: 440,
+  stacked: {
+    height: "100% !important",
+    flexDirection: "column !important"
+  },
+  compact: {
+    padding: "0 !important"
+  },
+  "fill-height-available": {
+    flex: "1 1 0 !important",
     overflowY: "scroll"
   }
 });
@@ -134,30 +142,48 @@ const Messages = () => {
     user.uid
   );
 
+  const [isSearching, setIsSearching] = useState(false);
+  const handleSearch = () => setIsSearching(prevState => !prevState);
+  const handleExitSearch = () => setIsSearching(false);
+
   return (
-    <React.Fragment>
-      <MessagesHeader
-        starredChannel={starredChannel}
-        setStarredChannel={setStarredChannel}
-        channel={channels.selectedChannel}
-        isPrivateChannel={channels.privateChannel}
-        members={members}
-        searchHandler={searchHandler}
-        searchLoading={searchLoading}
-        currentUser={user}
-      />
-      <Segment>
-        <Comment.Group className={styles.messages}>
+    <Grid padded columns={1} className={styles.stacked} fluid="true">
+      <Grid.Column className={styles.compact}>
+        <MessagesHeader
+          starredChannel={starredChannel}
+          setStarredChannel={setStarredChannel}
+          channel={channels.selectedChannel}
+          isPrivateChannel={channels.privateChannel}
+          members={members}
+          searchHandler={searchHandler}
+          searchLoading={searchLoading}
+          currentUser={user}
+          handleSearch={handleSearch}
+        />
+      </Grid.Column>
+
+      <Grid.Column className={styles["fill-height-available"]}>
+        <Comment.Group>
           {finalMessages.map(message => (
             <Message key={message.timestamp} message={message} user={user} />
           ))}
         </Comment.Group>
-      </Segment>
-      <MessagesForm
-        messagesRef={finalMessagesRef}
-        isPrivateChannel={channels.privateChannel}
-      />
-    </React.Fragment>
+      </Grid.Column>
+
+      <Grid.Column className={styles.compact}>
+        {!isSearching ? (
+          <MessagesForm
+            messagesRef={finalMessagesRef}
+            isPrivateChannel={channels.privateChannel}
+          />
+        ) : (
+          <SearchMessages
+            isSearching={isSearching}
+            handleExitSearch={handleExitSearch}
+          />
+        )}
+      </Grid.Column>
+    </Grid>
   );
 };
 

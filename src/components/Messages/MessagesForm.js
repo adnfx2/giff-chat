@@ -8,7 +8,7 @@ import FileModal from "../FileModal/FileModal";
 import ProgressBar from "../ProgressBar/ProgressBar";
 
 const useStyle = createUseStyles({
-  messages__form: {
+  messages__formRemove: {
     "&.ui": {
       position: "fixed",
       bottom: "1em",

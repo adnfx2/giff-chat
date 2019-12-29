@@ -1,7 +1,8 @@
 import React from "react";
-import { Grid, Header, Icon, Dropdown, Image } from "semantic-ui-react";
+import { Menu, Grid, Header, Icon, Dropdown, Image } from "semantic-ui-react";
+import { useDispatch } from "react-redux";
 import { createUseStyles } from "react-jss";
-import firebase from "../../firebase/firebase";
+import { sagaActions } from "../../authentication/sagas";
 
 const useStyle = createUseStyles({
   userPanel: {
@@ -20,6 +21,7 @@ const useStyle = createUseStyles({
 
 const UserPanel = ({ currentUser }) => {
   const styles = useStyle();
+  const dispatch = useDispatch();
   const dropdownOptions = () => [
     {
       key: "user",
@@ -39,10 +41,7 @@ const UserPanel = ({ currentUser }) => {
       text: (
         <span
           onClick={() => {
-            firebase
-              .auth()
-              .signOut()
-              .then(() => console.log("Signed out!"));
+            dispatch(sagaActions.logoutRequested());
           }}
         >
           Sign Out
@@ -51,29 +50,31 @@ const UserPanel = ({ currentUser }) => {
     }
   ];
   return (
-    <Grid className={styles.userPanel}>
-      <Grid.Column>
-        <Grid.Row>
-          <Header inverted as="h2" className={styles.header}>
-            <Icon name="american sign language interpreting" />
-            <Header.Content>Giff</Header.Content>
-          </Header>
-        </Grid.Row>
-        <Grid.Row>
-          <Header className={styles.dropdown} inverted as="h4">
-            <Dropdown
-              trigger={
-                <span>
-                  <Image src={currentUser.photoURL} spaced="right" avatar />
-                  {currentUser.displayName}
-                </span>
-              }
-              options={dropdownOptions()}
-            />
-          </Header>
-        </Grid.Row>
-      </Grid.Column>
-    </Grid>
+    <Menu.Item>
+      <Grid className={styles.userPanel}>
+        <Grid.Column>
+          <Grid.Row>
+            <Header inverted as="h2" className={styles.header}>
+              <Icon name="american sign language interpreting" />
+              <Header.Content>Giff</Header.Content>
+            </Header>
+          </Grid.Row>
+          <Grid.Row>
+            <Header className={styles.dropdown} inverted as="h4">
+              <Dropdown
+                trigger={
+                  <span>
+                    <Image src={currentUser.photoURL} spaced="right" avatar />
+                    {currentUser.displayName}
+                  </span>
+                }
+                options={dropdownOptions()}
+              />
+            </Header>
+          </Grid.Row>
+        </Grid.Column>
+      </Grid>
+    </Menu.Item>
   );
 };
 

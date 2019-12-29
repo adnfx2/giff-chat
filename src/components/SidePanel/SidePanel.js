@@ -9,26 +9,30 @@ import Starred from "./Starred";
 const useStyle = createUseStyles({
   sidePanel: {
     "&.ui.menu": {
-      background: "#4c3c4c"
+      background: "#4c3c4c",
+      height: "100%",
+      borderRadius: 0,
+      overflowY: "scroll"
     }
   }
 });
 
-const SidePanel = ({ currentUser }) => {
+const SidePanel = ({ currentUser, className }) => {
   const styles = useStyle();
 
   return (
     <Menu
       size="large"
       inverted
-      fixed="left"
       vertical
-      className={styles.sidePanel}
+      className={`${styles.sidePanel} ${className || ""}`.trim()}
     >
       <UserPanel currentUser={currentUser} />
-      <Starred currentUser={currentUser} />
-      <Channels currentUser={currentUser} />
-      <DirectMessages currentUser={currentUser} />
+      {`
+        <Starred currentUser={currentUser} />
+        <Channels currentUser={currentUser} />
+        <DirectMessages currentUser={currentUser} />
+     `}
     </Menu>
   );
 };

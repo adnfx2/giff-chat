@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { createUseStyles } from "react-jss";
-import { sagaActions } from "./saga";
+import { sagaActions } from "../../authentication/sagas";
 
 const useStyle = createUseStyles({
   container: {
