@@ -17,15 +17,30 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-const createFirebaseRefs = referencesArray => {
-  if (Array.isArray(referencesArray)) {
-    const multipleRefs = referencesArray.reduce((acc, reference) => {
-      return { ...acc, [reference]: firebase.database().ref(reference) };
-    }, {});
-    return multipleRefs;
+const createFirebaseRefs = references => {
+  if (typeof references !== "object") {
+    throw new Error("references must be an object");
   }
+  const referencesKeys = Object.keys(references);
+  const referencesReduced = referencesKeys.reduce((acc, referenceKey) => {
+    return {
+      ...acc,
+      [referenceKey]: firebase.database().ref(references[referenceKey])
+    };
+  }, {});
+  return referencesReduced;
 };
 
-export const firebaseRefs = createFirebaseRefs(["users", "presence"]);
+export const firebaseRefs = createFirebaseRefs({
+  channels: "channels",
+  users: "users",
+  presence: "presence",
+  connected: ".info/connected"
+});
+
+export const getStarredsRef = userId =>
+  firebaseRefs.users.child(userId).child("starred");
+
+export const getUserPresenceRef = userId => firebaseRefs.presence.child(userId);
 
 export default firebase;

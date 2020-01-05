@@ -3,7 +3,13 @@ import authFlowSaga, {
   sagaActionTypes as sagaAuthActionTypes
 } from "./authentication/sagas";
 import { actionTypes as authActionTypes } from "./authentication/reducer";
-import testListener from "./sagas/sagaTest";
+import { publicChannelsListener } from "./components/SidePanel/Channels/sagas";
+import { starredsListener } from "./components/SidePanel/Starreds/sagas";
+import {
+  connectedListener,
+  usersListener,
+  usersPresenceListener
+} from "./components/SidePanel/DirectMessages/sagas";
 
 function startListeners(listeners) {
   if (!Array.isArray(listeners)) {
@@ -23,7 +29,15 @@ function* initializeChat() {
     const isUserLogged = user.uid ? true : false;
     console.log({ userChanged: isUserLogged });
     if (isUserLogged) {
-      const sagaListeners = yield fork(startListeners([testListener]));
+      const sagaListeners = yield fork(
+        startListeners([
+          publicChannelsListener,
+          starredsListener,
+          connectedListener,
+          usersListener,
+          usersPresenceListener
+        ])
+      );
       console.log("wait for a reset app");
       yield take(sagaAuthActionTypes.RESET_APP);
       yield cancel(sagaListeners);

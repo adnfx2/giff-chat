@@ -2,7 +2,7 @@ import React from "react";
 import { Menu, Grid, Header, Icon, Dropdown, Image } from "semantic-ui-react";
 import { useDispatch } from "react-redux";
 import { createUseStyles } from "react-jss";
-import { sagaActions } from "../../authentication/sagas";
+import { sagaActions } from "../../../authentication/sagas";
 
 const useStyle = createUseStyles({
   userPanel: {

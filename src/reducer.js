@@ -2,6 +2,9 @@
 import * as actionTypes from "./actions";
 import { combineReducers } from "redux";
 import auth from "./authentication/reducer";
+import publicChannels from "./components/SidePanel/Channels/reducer";
+import starredChannelsById from "./components/SidePanel/Starreds/reducer";
+import users from './components/SidePanel/DirectMessages/reducer';
 
 const initialUserState = {
   currentUser: null,
@@ -75,7 +78,7 @@ const messages = (state = initialMessagesState, action) => {
   }
 };
 
-const users = (users = [], action) => {
+const uusers = (users = [], action) => {
   switch (action.type) {
     case actionTypes.LOAD_USERS:
       return action.users;
@@ -99,15 +102,11 @@ const notifications = (state = {}, action) => {
   }
 };
 
-const starredChannels = (starredChannels = {}, action) => {};
-
 const rootReducer = combineReducers({
   auth,
-  userData,
-  channels,
-  messages,
   users,
-  notifications
+  publicChannels,
+  starredChannelsById,
 });
 
 export default rootReducer;

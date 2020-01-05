@@ -42,7 +42,7 @@ const useStarredsListener = currentUser => {
 const Starred = ({ currentUser }) => {
   const styles = useStyle();
   const starredChannels = useSelector(state => state.starredChannels) || [];
-  useStarredsListener(currentUser);
+  //useStarredsListener(currentUser);
 
   return (
     <Menu.Menu className={styles.starredChannels}>

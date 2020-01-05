@@ -2,9 +2,9 @@ import React from "react";
 import { Menu } from "semantic-ui-react";
 import { createUseStyles } from "react-jss";
 import UserPanel from "./UserPanel";
-import Channels from "./Channels";
-import DirectMessages from "./DirectMessages";
-import Starred from "./Starred";
+//import Channels from "./Channels";
+//import DirectMessages from "./DirectMessages";
+//import Starred from "./Starred";
 
 const useStyle = createUseStyles({
   sidePanel: {
