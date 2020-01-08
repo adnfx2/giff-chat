@@ -1,26 +1,23 @@
 import React from "react";
 import { Menu, Grid, Header, Icon, Dropdown, Image } from "semantic-ui-react";
-import { useDispatch } from "react-redux";
-import { createUseStyles } from "react-jss";
+import { useDispatch, useSelector } from "react-redux";
 import { sagaActions } from "../../../authentication/sagas";
 
-const useStyle = createUseStyles({
+const styles = {
   userPanel: {
     background: "#4c3c4c"
   },
   header: {
-    "&.ui": {
-      padding: "1.2em",
-      margin: 0
-    }
+    padding: "1.2em",
+    margin: 0
   },
   dropdown: {
-    "&.ui": { padding: "0.25em" }
+    padding: "0.25em"
   }
-});
+};
 
-const UserPanel = ({ currentUser }) => {
-  const styles = useStyle();
+const UserPanel = () => {
+  const currentUser = useSelector(({ auth }) => auth.user.userProfile);
   const dispatch = useDispatch();
   const dropdownOptions = () => [
     {
@@ -49,18 +46,19 @@ const UserPanel = ({ currentUser }) => {
       )
     }
   ];
+
   return (
     <Menu.Item>
-      <Grid className={styles.userPanel}>
+      <Grid style={styles.userPanel}>
         <Grid.Column>
           <Grid.Row>
-            <Header inverted as="h2" className={styles.header}>
+            <Header inverted as="h2" style={styles.header}>
               <Icon name="american sign language interpreting" />
               <Header.Content>Giff</Header.Content>
             </Header>
           </Grid.Row>
           <Grid.Row>
-            <Header className={styles.dropdown} inverted as="h4">
+            <Header style={styles.dropdown} inverted as="h4">
               <Dropdown
                 trigger={
                   <span>

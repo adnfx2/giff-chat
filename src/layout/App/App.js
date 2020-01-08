@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar, Responsive } from "semantic-ui-react";
-import SidePanel from "../../components/SidePanel/SidePanel";
+import SidePanel from "../../components/SidePanel";
 import MainPanel from "../../components/MainPanel/MainPanel";
 import Messages from "../../components/Messages/Messages";
 import { createUseStyles } from "react-jss";
@@ -10,10 +10,11 @@ const useResize = () => {
   const [height, setHeight] = useState(window.innerHeight);
 
   useEffect(() => {
-    window.addEventListener("resize", () => {
-      setHeight(window.innerHeight);
-    });
-    return () => window.removeEventListener("resize");
+    const callback = () => setHeight(window.innerHeight);
+
+    window.addEventListener("resize", callback);
+
+    return () => window.removeEventListener("resize", callback);
   }, []);
 
   return height;
@@ -93,8 +94,8 @@ const useAppStyles = createUseStyles({
   }
 });
 
-const App2 = () => {
-  const currentUser = useSelector(({ userData }) => userData.currentUser);
+const App = () => {
+  const currentUser = "useSelector(({ userData }) => userData.currentUser)";
   const deviceHeight = useResize();
   const styles = useAppStyles({ deviceHeight });
 
@@ -105,7 +106,7 @@ const App2 = () => {
         className={styles["device-height"]}
       >
         <MobileNavbar currentUser={currentUser}>
-          <Messages />
+          {" <Messages /> "}
         </MobileNavbar>
       </Responsive>
       <Responsive
@@ -113,15 +114,11 @@ const App2 = () => {
         className={styles["device-height"]}
       >
         <DesktopNavbar currentUser={currentUser}>
-          <Messages />
+          {" <Messages /> "}
         </DesktopNavbar>
       </Responsive>
     </React.Fragment>
   );
-};
-
-const App = ({ currentUser }) => {
-  return <SidePanel currentUser={currentUser} />;
 };
 
 export default App;

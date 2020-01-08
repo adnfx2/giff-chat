@@ -114,7 +114,7 @@ export function* usersListener() {
   } finally {
     if (yield cancelled()) {
       channel.close();
-      yield put(actions.usersCleared());
+      yield put(actions.usersReset());
       console.log("usersListener/channel == CLOSED");
     }
   }

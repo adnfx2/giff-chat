@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Menu, Label } from "semantic-ui-react";
-import { setChannel } from "../../actions";
-import firebase from "../../firebase/firebase";
+import { actions } from "./reducer";
+import firebase from "../../../firebase/firebase";
 
 const useFirebaseDB = reference => {
   return useState(firebase.database().ref(reference));
 };
 
-const useNotificationListener = (channelsRef, selectedChannel, channel) => {
+const useNotificationListener = (channelsRef, selectedChannelId, channel) => {
   const [messagesRef] = useFirebaseDB("messages");
   const [notifications, setNotifications] = useState(null);
 
   useEffect(() => {
     messagesRef.child(channel.id).on("value", snap => {
       console.log("effect in channelitem -> " + channel.name);
-      const selectedChannelId = selectedChannel.id;
       const channelId = channel.id;
       const numChildren = snap.numChildren();
       setNotifications(prevNotifications => {
@@ -32,8 +31,8 @@ const useNotificationListener = (channelsRef, selectedChannel, channel) => {
         if (selectedChannelId !== channelId) {
           if (messagesRecieved > 0) {
             return {
-              ...prevNotifications,
               total: numChildren,
+              ...prevNotifications,
               count: messagesRecieved
             };
           } else {
@@ -55,20 +54,20 @@ const useNotificationListener = (channelsRef, selectedChannel, channel) => {
     });
     return () =>
       console.log("effect off") || messagesRef.child(channel.id).off();
-  }, [selectedChannel]); //eslint-disable-line
+  }, [selectedChannelId]); //eslint-disable-line
 
   return [notifications, setNotifications];
 };
 
-const ChannelItem = ({ channel, channelsRef }) => {
-  const selectedChannel = useSelector(state => state.channels.selectedChannel);
+const ChannelItem = ({ channel, channelsRef, channelId }) => {
+  const selectedChannelId = useSelector(state => state.currentChannel);
 
   const dispatch = useDispatch();
-  const changeChannelHandler = channel => dispatch(setChannel(channel));
+  const changeChannelHandler = channel => dispatch(actions.setChannel(channel));
 
   const [notificationData] = useNotificationListener(
     channelsRef,
-    selectedChannel,
+    selectedChannelId,
     channel
   );
 
@@ -79,7 +78,7 @@ const ChannelItem = ({ channel, channelsRef }) => {
       <Menu.Item
         onClick={() => changeChannelHandler(channel)}
         name={channel.name}
-        active={selectedChannel.id === channel.id}
+        active={selectedChannelId === channelId}
       >
         {notificationCount ? (
           <Label color="red">{notificationCount}</Label>

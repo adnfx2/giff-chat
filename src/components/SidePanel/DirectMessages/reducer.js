@@ -1,9 +1,7 @@
-import { combineReducers } from "redux";
-
 const USER_ADDED = "users/userAdded";
-const USER_PRESENCE_UPDATED = "users/userPresenceUpdated";
 const USER_REMOVED = "users/userRemoved";
-const USERS_CLEARED = "users/usersCleared";
+const USERS_RESET = "users/reset";
+const USER_PRESENCE_UPDATED = "users/userPresenceUpdated";
 
 const userAdded = user => ({
   type: USER_ADDED,
@@ -15,58 +13,58 @@ const userRemoved = userId => ({
   userId
 });
 
+const usersReset = () => ({
+  type: USERS_RESET
+});
+
 const userPresenceUpdated = (userId, isConnected) => ({
   type: USER_PRESENCE_UPDATED,
   userId,
   isConnected
 });
 
-const usersCleared = () => ({
-  type: USERS_CLEARED
-});
+const defaultUsersState = {
+  byId: {},
+  allIds: [],
+  presence: {}
+};
 
-const defaultUsersState = {};
+const removeKey = (key, obj) => {
+  const _obj = { ...obj };
+  delete obj[key];
+  return _obj;
+};
 
-const usersByIdReducer = (state = defaultUsersState, action) => {
+const usersReducer = (state = defaultUsersState, action) => {
   switch (action.type) {
     case USER_ADDED: {
       const { user } = action;
-      return { ...state, [user.uid]: user };
+
+      return {
+        ...state,
+        byId: { ...state.byId, [user.uid]: user },
+        allIds: [...state.allIds, user.uid]
+      };
     }
     case USER_REMOVED: {
-      const { userId } = action;
-      const users = { ...state };
-      delete users[userId];
-      return users;
+      const { user } = action;
+      const _byId = removeKey(user.uid, state.byId);
+      const _allIds = state.ids.filter(id => id !== user.uid);
+      return { ...state, byId: _byId, allIds: _allIds };
     }
-    case USERS_CLEARED: {
-      return defaultUsersState;
-    }
-    default:
-      return state;
-  }
-};
-
-const defaultPresenceState = {};
-
-const presenceReducer = (state = defaultPresenceState, action) => {
-  switch (action.type) {
     case USER_PRESENCE_UPDATED: {
       const { userId, isConnected } = action;
-      return { ...state, [userId]: isConnected };
+      return {
+        ...state,
+        presence: { ...state.presence, [userId]: isConnected }
+      };
     }
-    case USERS_CLEARED: {
-      return defaultPresenceState;
-    }
+    case USERS_RESET:
+      return defaultUsersState;
     default:
       return state;
   }
 };
-
-const usersReducer = combineReducers({
-  usersById: usersByIdReducer,
-  presenceByUserId: presenceReducer
-});
 
 export default usersReducer;
 
@@ -74,12 +72,12 @@ export const actionTypes = {
   USER_ADDED,
   USER_REMOVED,
   USER_PRESENCE_UPDATED,
-  USERS_CLEARED
+  USERS_RESET
 };
 
 export const actions = {
   userAdded,
   userRemoved,
   userPresenceUpdated,
-  usersCleared
+  usersReset
 };

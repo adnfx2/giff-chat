@@ -3,8 +3,8 @@ import authFlowSaga, {
   sagaActionTypes as sagaAuthActionTypes
 } from "./authentication/sagas";
 import { actionTypes as authActionTypes } from "./authentication/reducer";
-import { publicChannelsListener } from "./components/SidePanel/Channels/sagas";
-import { starredsListener } from "./components/SidePanel/Starreds/sagas";
+import { publicChannelsListener } from "./components/SidePanel/PublicChannels/sagas";
+import { starredChannelsListener } from "./components/SidePanel/StarredChannels/sagas";
 import {
   connectedListener,
   usersListener,
@@ -32,7 +32,7 @@ function* initializeChat() {
       const sagaListeners = yield fork(
         startListeners([
           publicChannelsListener,
-          starredsListener,
+          starredChannelsListener,
           connectedListener,
           usersListener,
           usersPresenceListener

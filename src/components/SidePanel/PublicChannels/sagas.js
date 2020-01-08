@@ -20,7 +20,7 @@ export function* publicChannelsListener() {
     while (true) {
       const { publicChannel } = yield take(channel);
       if (publicChannel) {
-        yield put(actions.publicChannelAdded(publicChannel));
+        yield put(actions.channelAdded(publicChannel));
       }
     }
   } catch (error) {
@@ -28,7 +28,7 @@ export function* publicChannelsListener() {
   } finally {
     if (yield cancelled()) {
       channel.close();
-      yield put(actions.publicChannelsRemoved());
+      yield put(actions.publicChannelsReset());
       console.log("publicChannelsListener/channel == CLOSED");
     }
   }

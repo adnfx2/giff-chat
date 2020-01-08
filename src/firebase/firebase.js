@@ -38,7 +38,7 @@ export const firebaseRefs = createFirebaseRefs({
   connected: ".info/connected"
 });
 
-export const getStarredsRef = userId =>
+export const getStarredRef = userId =>
   firebaseRefs.users.child(userId).child("starred");
 
 export const getUserPresenceRef = userId => firebaseRefs.presence.child(userId);
