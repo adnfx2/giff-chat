@@ -35,12 +35,16 @@ export const firebaseRefs = createFirebaseRefs({
   channels: "channels",
   users: "users",
   presence: "presence",
-  connected: ".info/connected"
+  connected: ".info/connected",
+  messages: "messages"
 });
 
 export const getStarredRef = userId =>
   firebaseRefs.users.child(userId).child("starred");
 
 export const getUserPresenceRef = userId => firebaseRefs.presence.child(userId);
+
+export const getChannelMessagesRef = channelId =>
+  firebaseRefs.messages.child(channelId);
 
 export default firebase;

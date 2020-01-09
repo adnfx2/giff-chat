@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { Menu, Icon } from "semantic-ui-react";
+import { useDispatch, useSelector } from "react-redux";
+import { Menu, Icon, Label } from "semantic-ui-react";
 import ModalChannel from "../../ModalChannel/ModalChannel";
-import { actions } from "./reducer";
-import ChannelItem from "./ChannelItem";
+import { actions as sidePanelActions } from "../reducer";
 
 const styles = {
   channels: {
@@ -11,12 +10,30 @@ const styles = {
   }
 };
 
+const renderNotifications = count => {
+  if (count) {
+    return <Label color="red">{count}</Label>;
+  }
+};
+
 const PublicChannels = () => {
   const [toggleModalChannel, setToggleModalChannel] = useState(false);
+  const dispatch = useDispatch();
   const selectedChannelId = useSelector(state => state.currentChannel);
   const currentUser = useSelector(({ auth }) => auth.user.userProfile);
   const channelsById = useSelector(({ channels }) => channels.byId);
   const channelsIds = useSelector(({ channels }) => channels.allIds);
+  const unreadMessages = useSelector(
+    ({ unreadMessages }) => unreadMessages.byChannelId
+  );
+
+  const handleChangeChannel = channelId => {
+    dispatch(sidePanelActions.currentChannelChanged(channelId));
+  };
+
+  if (channelsIds.length > 0 && !selectedChannelId) {
+    dispatch(sidePanelActions.currentChannelChanged(channelsIds[0]));
+  }
 
   return (
     <React.Fragment>
@@ -30,13 +47,17 @@ const PublicChannels = () => {
         </Menu.Item>
         {channelsIds.map(channelId => {
           const channel = channelsById[channelId];
+          const unreadMessagesCount = unreadMessages[channelId];
 
           return (
-            <ChannelItem
+            <Menu.Item
               key={channelId}
-              channelId={channelId}
-              channel={channel}
-            />
+              onClick={() => handleChangeChannel(channelId)}
+              name={channel.name}
+              active={selectedChannelId === channelId}
+            >
+              {renderNotifications(unreadMessagesCount)}# {channel.name}
+            </Menu.Item>
           );
         })}
       </Menu.Menu>

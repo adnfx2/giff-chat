@@ -1,7 +1,11 @@
 import { eventChannel } from "redux-saga";
-import { cancelled, put, take } from "redux-saga/effects";
-import { firebaseRefs } from "../../../firebase/firebase";
+import { fork, put, take } from "redux-saga/effects";
+import {
+  firebaseRefs,
+  getChannelMessagesRef
+} from "../../../firebase/firebase";
 import { actions } from "./reducer";
+import { actions as sidePanelActions } from "../reducer";
 
 export function* publicChannelsListener() {
   console.log("publicChannelsListener/init == STARTED");
@@ -21,15 +25,47 @@ export function* publicChannelsListener() {
       const { publicChannel } = yield take(channel);
       if (publicChannel) {
         yield put(actions.channelAdded(publicChannel));
+        yield fork(unreadMessagesListener, publicChannel.id);
       }
     }
   } catch (error) {
     console.error({ publicChannelsError: error });
   } finally {
-    if (yield cancelled()) {
-      channel.close();
-      yield put(actions.publicChannelsReset());
-      console.log("publicChannelsListener/channel == CLOSED");
+    channel.close();
+    yield put(actions.publicChannelsReset());
+    console.log("publicChannelsListener/channel == CLOSED");
+  }
+}
+
+export function* unreadMessagesListener(channelId) {
+  console.log("unreadMessagesListener/init == STARTED");
+  const channelMessagesRef = getChannelMessagesRef(channelId);
+  const channel = new eventChannel(emiter => {
+    channelMessagesRef.on("value", snapshot => {
+      emiter({ totalMessages: snapshot.numChildren() });
+    });
+
+    return () => {
+      channelMessagesRef.off();
+      console.log("unreadMessagesListener/channelMessagesRef == OFF");
+    };
+  });
+
+  try {
+    let readMessages = null;
+    while (true) {
+      const { totalMessages } = yield take(channel);
+      readMessages = readMessages === null ? totalMessages : readMessages;
+      const unreadMessages = totalMessages - readMessages;
+      yield put(
+        sidePanelActions.unreadMessagesUpdated(channelId, unreadMessages)
+      );
     }
+  } catch (error) {
+    console.error({ publicNotificationsListener: error });
+  } finally {
+    channel.close();
+    yield put(sidePanelActions.unreadMessagesReset());
+    console.log("unreadMessagesListener/channel == CLOSED");
   }
 }

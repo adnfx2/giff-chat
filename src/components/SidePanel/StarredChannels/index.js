@@ -1,6 +1,7 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Menu, Icon } from "semantic-ui-react";
+import { actions as sidePanelActions } from "../reducer";
 
 const styles = {
   container: {
@@ -12,18 +13,20 @@ const styles = {
   }
 };
 
-const renderStarredItems = (channels, starredIds) =>
+const renderStarredItems = (channels, starredIds, selectedChannelId, handler) =>
   starredIds.map(id => {
-    if (!channels[id]) {
+    const channel = channels[id];
+
+    if (!channel) {
       return "";
     }
 
     return (
       <Menu.Item
         key={id}
-        onClick={() => console.log("StarredChannelsClicked")}
+        onClick={() => handler(id)}
         style={styles.starredChannels}
-        active={false}
+        active={selectedChannelId === id}
       >
         {channels[id].name}
       </Menu.Item>
@@ -31,9 +34,15 @@ const renderStarredItems = (channels, starredIds) =>
   });
 
 const StarredChannels = () => {
+  const dispatch = useDispatch();
+  const selectedChannelId = useSelector(state => state.currentChannel);
   const channels = useSelector(({ channels }) => channels.byId);
   const starredIds = useSelector(({ starred }) => starred);
   const totalStarredChannels = starredIds.length;
+
+  const handleChangeChannel = channelId => {
+    dispatch(sidePanelActions.currentChannelChanged(channelId));
+  };
 
   return (
     <Menu.Menu style={styles.container}>
@@ -43,7 +52,14 @@ const StarredChannels = () => {
         </span>{" "}
         ({totalStarredChannels})
       </Menu.Item>
-      {channels ? renderStarredItems(channels, starredIds) : ""}
+      {channels
+        ? renderStarredItems(
+            channels,
+            starredIds,
+            selectedChannelId,
+            handleChangeChannel
+          )
+        : ""}
     </Menu.Menu>
   );
 };
