@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button, Icon, Modal, Input, Form } from "semantic-ui-react";
+import { firebaseRefs } from "../../../firebase/firebase";
 
 const validationSchema = Yup.object().shape({
   channelName: Yup.string()
@@ -10,7 +11,7 @@ const validationSchema = Yup.object().shape({
     .max(15)
     .required(),
   channelTopic: Yup.string()
-    .matches(/^[a-zA-Z0-9]+$/)
+    .matches(/^[\w\-\s]+$/)
     .min(5)
     .max(15)
     .required()
@@ -30,12 +31,7 @@ const getValidationErrors = (errors, touched) => {
   }, initialValues);
 };
 
-const ModalChannel = ({
-  visibility,
-  onCloseHandler,
-  currentUser,
-  channelsRef
-}) => {
+const ModalChannel = ({ visibility, onCloseHandler, currentUser }) => {
   const {
     values,
     errors,
@@ -51,14 +47,13 @@ const ModalChannel = ({
       channelTopic: ""
     },
     validationSchema: validationSchema,
-    onSubmit: f => console.log("submittingg") || addChannel()
+    onSubmit: () => createChannel()
   });
 
   const { errorsFlags } = getValidationErrors(errors, touched);
 
-  const addChannel = () => {
-    const key = channelsRef.push().key;
-
+  const createChannel = () => {
+    const key = firebaseRefs.channels.push().key;
     const newChannel = {
       id: key,
       name: values.channelName,
@@ -69,15 +64,14 @@ const ModalChannel = ({
       }
     };
 
-    channelsRef
+    firebaseRefs.channels
       .child(key)
       .update(newChannel)
       .then(() => {
         resetForm();
         onCloseHandler();
-        console.log("channel added");
       })
-      .catch(err => console.log(err));
+      .catch(err => console.error({ createChannelError: err }));
   };
 
   return (

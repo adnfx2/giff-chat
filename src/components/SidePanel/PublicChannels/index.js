@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Menu, Icon, Label } from "semantic-ui-react";
-import ModalChannel from "../../ModalChannel/ModalChannel";
+import ModalChannel from "./ModalChannel";
 import { actions as sidePanelActions } from "../reducer";
 
 const styles = {
@@ -63,7 +63,6 @@ const PublicChannels = () => {
       </Menu.Menu>
       <ModalChannel
         currentUser={currentUser}
-        channelsRef={"channelsRef"}
         visibility={toggleModalChannel}
         onCloseHandler={() => setToggleModalChannel(false)}
       />
