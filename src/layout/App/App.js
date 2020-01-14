@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Sidebar, Responsive } from "semantic-ui-react";
 import SidePanel from "../../components/SidePanel";
 import MainPanel from "../../components/MainPanel/MainPanel";
-import Messages from "../../components/Messages/Messages";
+import Messages from "../../components/Messages";
 import { createUseStyles } from "react-jss";
-import { useSelector } from "react-redux";
 
 const useResize = () => {
   const [height, setHeight] = useState(window.innerHeight);
@@ -38,7 +37,7 @@ const useMobileStyles = createUseStyles({
   }
 });
 
-const MobileNavbar = ({ currentUser, children }) => {
+const MobileNavbar = ({ children }) => {
   const [visible, setVisible] = useState(false);
   const styles = useMobileStyles();
 
@@ -53,7 +52,7 @@ const MobileNavbar = ({ currentUser, children }) => {
         visible={visible}
         className={styles.sidebar}
       >
-        <SidePanel currentUser={currentUser} />
+        <SidePanel />
       </Sidebar>
       <Sidebar.Pusher
         onClick={handleHideSidePanel}
@@ -76,12 +75,12 @@ const useDesktopStyles = createUseStyles({
   }
 });
 
-const DesktopNavbar = ({ currentUser, children }) => {
+const DesktopNavbar = ({ children, ...props }) => {
   const styles = useDesktopStyles();
 
   return (
     <div className={styles["desktop-wrapper"]}>
-      <SidePanel currentUser={currentUser} />
+      <SidePanel />
       {children}
     </div>
   );
@@ -95,7 +94,6 @@ const useAppStyles = createUseStyles({
 });
 
 const App = () => {
-  const currentUser = "useSelector(({ userData }) => userData.currentUser)";
   const deviceHeight = useResize();
   const styles = useAppStyles({ deviceHeight });
 
@@ -105,16 +103,16 @@ const App = () => {
         {...Responsive.onlyMobile}
         className={styles["device-height"]}
       >
-        <MobileNavbar currentUser={currentUser}>
-          {" <Messages /> "}
+        <MobileNavbar>
+          <Messages />
         </MobileNavbar>
       </Responsive>
       <Responsive
         minWidth={Responsive.onlyTablet.minWidth}
         className={styles["device-height"]}
       >
-        <DesktopNavbar currentUser={currentUser}>
-          {" <Messages /> "}
+        <DesktopNavbar>
+          <Messages />
         </DesktopNavbar>
       </Responsive>
     </React.Fragment>

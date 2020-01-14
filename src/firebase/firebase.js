@@ -42,6 +42,9 @@ export const firebaseRefs = createFirebaseRefs({
 export const getStarredRef = userId =>
   firebaseRefs.users.child(userId).child("starred");
 
+export const getStarredChannelRef = (userId, channelId) =>
+  getStarredRef(userId).child(channelId);
+
 export const getUserPresenceRef = userId => firebaseRefs.presence.child(userId);
 
 export const getChannelMessagesRef = channelId =>

@@ -13,10 +13,8 @@ const styles = {
   }
 };
 
-const DirectMessages = () => {
+const DirectMessages = ({ currentUser, currentChannel }) => {
   const dispatch = useDispatch();
-  const selectedChannelId = useSelector(state => state.currentChannel);
-  const currentUser = useSelector(({ auth }) => auth.user.userProfile);
   const usersById = useSelector(({ users }) => users.byId);
   const usersIds = useSelector(({ users }) => users.allIds);
   const presence = useSelector(({ users }) => users.presence);
@@ -43,7 +41,7 @@ const DirectMessages = () => {
             key={directChannelId}
             onClick={() => handleChangeChannel(directChannelId)}
             style={styles.dm__item}
-            active={selectedChannelId === directChannelId}
+            active={currentChannel.id === directChannelId}
           >
             <Icon name="circle" color={isOnline ? "green" : "red"} />@{" "}
             {user.name}

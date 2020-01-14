@@ -1,5 +1,6 @@
 import React from "react";
 import { Menu } from "semantic-ui-react";
+import { useSelector } from "react-redux";
 import UserPanel from "./UserPanel";
 import StarredChannels from "./StarredChannels";
 import PublicChannels from "./PublicChannels";
@@ -15,6 +16,9 @@ const styles = {
 };
 
 const SidePanel = ({ className }) => {
+  const currentUser = useSelector(({ auth }) => auth.user.userProfile);
+  const currentChannel = useSelector(state => state.currentChannel);
+
   return (
     <Menu
       size="large"
@@ -23,10 +27,16 @@ const SidePanel = ({ className }) => {
       style={styles.sidePanel}
       className={className}
     >
-      <UserPanel />
-      <StarredChannels />
-      <PublicChannels />
-      <DirectMessages />
+      <UserPanel currentUser={currentUser} />
+      <StarredChannels currentChannel={currentChannel} />
+      <PublicChannels
+        currentUser={currentUser}
+        currentChannel={currentChannel}
+      />
+      <DirectMessages
+        currentUser={currentUser}
+        currentChannel={currentChannel}
+      />
     </Menu>
   );
 };

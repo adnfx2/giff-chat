@@ -13,7 +13,7 @@ const styles = {
   }
 };
 
-const renderStarredItems = (channels, starredIds, selectedChannelId, handler) =>
+const renderStarredItems = (channels, starredIds, currentChannel, handler) =>
   starredIds.map(id => {
     const channel = channels[id];
 
@@ -26,16 +26,15 @@ const renderStarredItems = (channels, starredIds, selectedChannelId, handler) =>
         key={id}
         onClick={() => handler(id)}
         style={styles.starredChannels}
-        active={selectedChannelId === id}
+        active={currentChannel.id === id}
       >
         {channels[id].name}
       </Menu.Item>
     );
   });
 
-const StarredChannels = () => {
+const StarredChannels = ({ currentChannel }) => {
   const dispatch = useDispatch();
-  const selectedChannelId = useSelector(state => state.currentChannel);
   const channels = useSelector(({ channels }) => channels.byId);
   const starredIds = useSelector(({ starred }) => starred);
   const totalStarredChannels = starredIds.length;
@@ -56,7 +55,7 @@ const StarredChannels = () => {
         ? renderStarredItems(
             channels,
             starredIds,
-            selectedChannelId,
+            currentChannel.id,
             handleChangeChannel
           )
         : ""}

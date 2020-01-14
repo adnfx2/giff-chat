@@ -2,6 +2,7 @@
 import { combineReducers } from "redux";
 import auth from "./authentication/reducer";
 import sidepanelReducers from "./components/SidePanel/reducer";
+import messages from "./components/Messages/reducer";
 
 const {
   channels,
@@ -17,7 +18,8 @@ const rootReducer = combineReducers({
   channels,
   currentChannel,
   starred,
-  unreadMessages
+  unreadMessages,
+  messages
 });
 
 export default rootReducer;

@@ -16,22 +16,18 @@ const renderNotifications = count => {
   }
 };
 
-const PublicChannels = () => {
+const PublicChannels = ({ currentUser, currentChannel }) => {
   const [toggleModalChannel, setToggleModalChannel] = useState(false);
   const dispatch = useDispatch();
-  const selectedChannelId = useSelector(state => state.currentChannel);
-  const currentUser = useSelector(({ auth }) => auth.user.userProfile);
   const channelsById = useSelector(({ channels }) => channels.byId);
   const channelsIds = useSelector(({ channels }) => channels.allIds);
-  const unreadMessages = useSelector(
-    ({ unreadMessages }) => unreadMessages.byChannelId
-  );
+  const unreadMessages = useSelector(state => state.unreadMessages);
 
   const handleChangeChannel = channelId => {
     dispatch(sidePanelActions.currentChannelChanged(channelId));
   };
 
-  if (channelsIds.length > 0 && !selectedChannelId) {
+  if (channelsIds.length > 0 && !currentChannel.id) {
     dispatch(sidePanelActions.currentChannelChanged(channelsIds[0]));
   }
 
@@ -54,7 +50,7 @@ const PublicChannels = () => {
               key={channelId}
               onClick={() => handleChangeChannel(channelId)}
               name={channel.name}
-              active={selectedChannelId === channelId}
+              active={currentChannel.id === channelId}
             >
               {renderNotifications(unreadMessagesCount)}# {channel.name}
             </Menu.Item>

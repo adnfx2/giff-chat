@@ -3,13 +3,8 @@ import authFlowSaga, {
   sagaActionTypes as sagaAuthActionTypes
 } from "./authentication/sagas";
 import { actionTypes as authActionTypes } from "./authentication/reducer";
-import { publicChannelsListener } from "./components/SidePanel/PublicChannels/sagas";
-import { starredChannelsListener } from "./components/SidePanel/StarredChannels/sagas";
-import {
-  connectedListener,
-  usersListener,
-  usersPresenceListener
-} from "./components/SidePanel/DirectMessages/sagas";
+import { sidePanelListeners } from "./components/SidePanel/sagas";
+import messagesHeaderSaga from "./components/Messages/MessagesHeader/sagas";
 
 function startListeners(listeners) {
   if (!Array.isArray(listeners)) {
@@ -29,15 +24,7 @@ function* initializeChat() {
     const isUserLogged = user.uid ? true : false;
     console.log({ userChanged: isUserLogged });
     if (isUserLogged) {
-      const sagaListeners = yield fork(
-        startListeners([
-          publicChannelsListener,
-          starredChannelsListener,
-          connectedListener,
-          usersListener,
-          usersPresenceListener
-        ])
-      );
+      const sagaListeners = yield fork(startListeners([...sidePanelListeners]));
       console.log("wait for a reset app");
       yield take(sagaAuthActionTypes.RESET_APP);
       yield cancel(sagaListeners);
@@ -46,5 +33,5 @@ function* initializeChat() {
 }
 
 export default function* rootSagas() {
-  yield all([authFlowSaga(), initializeChat()]);
+  yield all([authFlowSaga(), initializeChat(), messagesHeaderSaga()]);
 }

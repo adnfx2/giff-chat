@@ -1,6 +1,6 @@
 import React from "react";
 import { Menu, Grid, Header, Icon, Dropdown, Image } from "semantic-ui-react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { sagaActions } from "../../../authentication/sagas";
 
 const styles = {
@@ -16,8 +16,7 @@ const styles = {
   }
 };
 
-const UserPanel = () => {
-  const currentUser = useSelector(({ auth }) => auth.user.userProfile);
+const UserPanel = ({  currentUser   })=> {
   const dispatch = useDispatch();
   const dropdownOptions = () => [
     {

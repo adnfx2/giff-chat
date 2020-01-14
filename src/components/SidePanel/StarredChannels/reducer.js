@@ -24,7 +24,7 @@ const starredReducer = (state = defaultState, action) => {
       return [...state, action.channelId];
     }
     case CHANNEL_UNSTARRED: {
-      const filteredResult = state.ids.filter(id => id !== action.channelId);
+      const filteredResult = state.filter(id => id !== action.channelId);
       return filteredResult;
     }
     case STARRED_RESET:
