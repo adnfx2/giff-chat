@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Sidebar, Responsive } from "semantic-ui-react";
-import SidePanel from "../../components/SidePanel";
-import MainPanel from "../../components/MainPanel/MainPanel";
-import Messages from "../../components/Messages";
+import SidePanel from "../SidePanel";
+import MainPanel from "../MainPanel";
+import Messages from "../Messages";
 import { createUseStyles } from "react-jss";
 
 const useResize = () => {

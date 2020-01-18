@@ -33,13 +33,7 @@ const displayName = (channel, isPrivate) => {
   return `${isPrivate ? "@" : "#"}${channel.name}`;
 };
 
-const MessagesHeader = ({
-  currentUser,
-  currentChannel,
-  searchHandler,
-  searchLoading,
-  handleSearch
-}) => {
+const MessagesHeader = ({ currentUser, currentChannel, handleSearch }) => {
   const dispatch = useDispatch();
   const { id: channelId, isPrivate } = currentChannel;
   const channel = useSelector(state => state.channels.byId[channelId]);

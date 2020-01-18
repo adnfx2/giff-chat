@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid, Comment } from "semantic-ui-react";
 import MessagesHeader from "./MessagesHeader";
 import MessagesForm from "./MessagesForm";
@@ -20,11 +20,69 @@ const styles = {
   }
 };
 
-const Messages = () => {
+let prevTimeout = null;
+
+const createTimeout = (handler, ms) => {
+  if (prevTimeout) {
+    clearTimeout(prevTimeout);
+  }
+  prevTimeout = setTimeout(handler, ms);
+};
+
+const filterMessages = (messages, searchTerm) => {
+  const regex = new RegExp(searchTerm, "gi");
+  const filteredMessages = messages.reduce((acc, message) => {
+    if (
+      (message.content && message.content.match(regex)) ||
+      message.user.name.match(regex)
+    ) {
+      acc.push(message);
+    }
+    return acc;
+  }, []);
+  return filteredMessages;
+};
+
+const useSearchMessages = (messages, searchTerm) => {
+  const [searchResult, setSearchResult] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
+  useEffect(() => {
+    if (messages && messages.length > 0 && searchTerm) {
+      setIsSearching(true);
+      const filteredMessages = filterMessages(messages, searchTerm);
+      createTimeout(() => {
+        setIsSearching(false);
+        setSearchResult(filteredMessages);
+      }, 1000);
+    } else {
+      setIsSearching(false);
+      setSearchResult(null);
+    }
+  }, [messages, searchTerm]);
+  return [isSearching, searchResult];
+};
+
+const Messages = () => {
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   const currentUser = useSelector(({ auth }) => auth.user.userProfile);
   const currentChannel = useSelector(state => state.currentChannel);
-  const messages = useSelector(state => state.messages[currentChannel.id]);
+  const allMessages = useSelector(state => state.messages[currentChannel.id]);
+  const searchStatus = useSearchMessages(allMessages, searchValue);
+  const [isSearching, searchResult] = searchStatus;
+  const messages = searchResult || allMessages;
+
+  const handleShowSearch = () => setShowSearch(true);
+
+  const handleExitSearch = () => {
+    setShowSearch(false);
+    setSearchValue("");
+  };
+
+  const handleSearchValue = e => {
+    const value = e.target.value;
+    setSearchValue(value);
+  };
 
   return (
     <Grid padded columns={1} style={styles.stacked} fluid="true">
@@ -32,6 +90,7 @@ const Messages = () => {
         <MessagesHeader
           currentUser={currentUser}
           currentChannel={currentChannel}
+          handleSearch={!showSearch ? handleShowSearch : handleExitSearch}
         />
       </Grid.Column>
 
@@ -49,15 +108,17 @@ const Messages = () => {
       </Grid.Column>
 
       <Grid.Column style={styles.compact}>
-        {!isSearching ? (
+        {!showSearch ? (
           <MessagesForm
             currentUser={currentUser}
             currentChannel={currentChannel}
           />
         ) : (
           <SearchMessages
+            onChange={handleSearchValue}
             isSearching={isSearching}
-            handleExit={() => console.log("handleExitSearch")}
+            isVisible={showSearch}
+            handleExit={handleExitSearch}
           />
         )}
       </Grid.Column>

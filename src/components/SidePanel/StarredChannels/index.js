@@ -13,24 +13,23 @@ const styles = {
   }
 };
 
-const renderStarredItems = (channels, starredIds, currentChannel, handler) =>
-  starredIds.map(id => {
-    const channel = channels[id];
+const renderStarredItems = (channels, starredIds, currentChannelId, handler) =>
+  starredIds.map(channelId => {
+    const channel = channels[channelId];
 
-    if (!channel) {
-      return "";
+    if (channel) {
+      return (
+        <Menu.Item
+          key={channelId}
+          onClick={() => handler(channelId)}
+          style={styles.starredChannels}
+          active={currentChannelId === channelId}
+        >
+          {channel.name}
+        </Menu.Item>
+      );
     }
-
-    return (
-      <Menu.Item
-        key={id}
-        onClick={() => handler(id)}
-        style={styles.starredChannels}
-        active={currentChannel.id === id}
-      >
-        {channels[id].name}
-      </Menu.Item>
-    );
+    return "";
   });
 
 const StarredChannels = ({ currentChannel }) => {

@@ -1,26 +1,33 @@
 import React, { useEffect, useRef } from "react";
-import { Segment, Button, Input, Icon } from "semantic-ui-react";
+import { Segment, Button, Input } from "semantic-ui-react";
 
 const useFocusInput = (shouldFocus, ref) => {
   useEffect(() => {
-    console.log({ ref });
     if (shouldFocus && ref) {
       ref.current.focus();
     }
   }, [ref, shouldFocus]);
 };
 
-const SearchMessages = ({ isSearching, handleExitSearch }) => {
+const SearchMessages = ({
+  isSearching,
+  isVisible,
+  handleExit,
+  onChange,
+  value
+}) => {
   const inputRef = useRef();
-  useFocusInput(isSearching, inputRef);
+  useFocusInput(isVisible, inputRef);
 
   return (
     <Segment>
       <Input
         ref={inputRef}
+        onChange={onChange}
         fluid
-        label={<Button icon="arrow left" onClick={handleExitSearch} />}
+        label={<Button icon="arrow left" onClick={handleExit} />}
         labelPosition="left"
+        loading={isSearching}
         name="message"
         placeholder="Search messages..."
       />

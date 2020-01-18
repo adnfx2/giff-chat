@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
-import App from "./layout/App/App";
+import App from "./components/App";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import {
@@ -18,7 +18,7 @@ import createSagaMiddleware from "redux-saga";
 import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducer";
 import rootSaga from "./sagas";
-import Spinner from "./components/Spinner/Spinner";
+import Spinner from "./components/Spinner";
 
 const useAuthRedirect = (userId, path = { logged: "/", logout: "login" }) => {
   const history = useHistory();
@@ -29,7 +29,7 @@ const useAuthRedirect = (userId, path = { logged: "/", logout: "login" }) => {
     } else {
       history.push(path.logout);
     }
-  }, [userId]); //eslint-disable-line
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 const sagaMiddleware = createSagaMiddleware();
