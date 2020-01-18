@@ -10,25 +10,30 @@ const useStyle = createUseStyles({
   }
 });
 
-const ProgressBar = ({ uploadState, percentUploaded }) => {
+const ProgressBar = ({ isUploading, percentUploaded }) => {
   const [show, setShow] = useState(false);
+  const [progress, setProgress] = useState(percentUploaded);
   const styles = useStyle();
 
   useEffect(() => {
-    if (uploadState === "uploading") {
-      setShow(true);
-    } else if (uploadState === "done") {
-      setTimeout(() => setShow(false), 3000);
-    } else {
-      setShow(false);
+    const shouldShowProgress = state => {
+      setShow(state);
+      setProgress(percentUploaded);
+    };
+    if (isUploading) {
+      shouldShowProgress(true);
+    } else if (show) {
+      setTimeout(() => {
+        shouldShowProgress(false);
+      }, 2000);
     }
-  }, [uploadState]);
+  }, [isUploading, percentUploaded]); //eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     show && (
       <Progress
         className={styles.progress__bar}
-        percent={percentUploaded}
+        percent={progress}
         progress
         indicating
         size="medium"

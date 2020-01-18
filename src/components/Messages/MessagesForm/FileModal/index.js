@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Input, Button, Icon } from "semantic-ui-react";
 import mime from "mime-types";
 
-const FileModal = ({ modal, closeModal, uploadFile }) => {
+const FileModal = ({ modal, closeModal, sendFileHandler }) => {
   const [file, setFile] = useState();
   const authorized = ["image/jpeg", "image/png"];
 
@@ -22,7 +22,7 @@ const FileModal = ({ modal, closeModal, uploadFile }) => {
       const metadata = {
         contentType: mime.lookup(file.name)
       };
-      uploadFile(file, metadata);
+      sendFileHandler(file, metadata);
       closeModal();
       clearFile();
     }

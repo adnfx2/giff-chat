@@ -1,5 +1,5 @@
 import { eventChannel } from "redux-saga";
-import { fork, put, take } from "redux-saga/effects";
+import { fork, put, select, take } from "redux-saga/effects";
 import {
   firebaseRefs,
   getChannelMessagesRef
@@ -55,11 +55,20 @@ export function* unreadMessagesListener(channelId) {
     let readMessages = null;
     while (true) {
       const { totalMessages } = yield take(channel);
-      readMessages = readMessages === null ? totalMessages : readMessages;
-      const unreadMessages = totalMessages - readMessages;
-      yield put(
-        sidePanelActions.unreadMessagesUpdated(channelId, unreadMessages)
-      );
+
+      const currentChannelId = yield select(state => state.currentChannel.id);
+
+      if (currentChannelId !== channelId) {
+        readMessages = readMessages === null ? totalMessages : readMessages;
+
+        const unreadMessages = totalMessages - readMessages;
+
+        yield put(
+          sidePanelActions.unreadMessagesUpdated(channelId, unreadMessages)
+        );
+      } else {
+        readMessages = totalMessages;
+      }
     }
   } catch (error) {
     console.error({ publicNotificationsListener: error });

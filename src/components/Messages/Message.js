@@ -1,6 +1,5 @@
 import React from "react";
 import { Comment, Image } from "semantic-ui-react";
-import { createUseStyles } from "react-jss";
 import moment from "moment";
 
 const styles = {
@@ -18,7 +17,7 @@ const styles = {
 const timeFromNow = timestamp => moment(timestamp).fromNow();
 
 const Message = ({ message, currentUser }) => {
-  const isOwnMessage = message.user.id === currentUser.id;
+  const isOwnMessage = message.user.id === currentUser.uid;
 
   return (
     <Comment>

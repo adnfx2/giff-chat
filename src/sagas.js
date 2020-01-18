@@ -4,7 +4,7 @@ import authFlowSaga, {
 } from "./authentication/sagas";
 import { actionTypes as authActionTypes } from "./authentication/reducer";
 import { sidePanelListeners } from "./components/SidePanel/sagas";
-import messagesHeaderSaga from "./components/Messages/MessagesHeader/sagas";
+import messagesSaga from "./components/Messages/sagas";
 
 function startListeners(listeners) {
   if (!Array.isArray(listeners)) {
@@ -33,5 +33,5 @@ function* initializeChat() {
 }
 
 export default function* rootSagas() {
-  yield all([authFlowSaga(), initializeChat(), messagesHeaderSaga()]);
+  yield all([authFlowSaga(), initializeChat(), messagesSaga()]);
 }

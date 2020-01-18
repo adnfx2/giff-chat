@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Transition, Header, Segment, Input, Icon } from "semantic-ui-react";
+import { Header, Segment, Icon } from "semantic-ui-react";
 import { sagaActions } from "./sagas";
 
 const styles = {
@@ -34,14 +34,10 @@ const displayName = (channel, isPrivate) => {
 };
 
 const MessagesHeader = ({
+  currentUser,
   currentChannel,
-  starredChannel,
-  setStarredChannel,
-  members,
   searchHandler,
   searchLoading,
-  isPrivateChannel,
-  currentUser,
   handleSearch
 }) => {
   const dispatch = useDispatch();

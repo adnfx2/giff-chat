@@ -50,4 +50,11 @@ export const getUserPresenceRef = userId => firebaseRefs.presence.child(userId);
 export const getChannelMessagesRef = channelId =>
   firebaseRefs.messages.child(channelId);
 
+export const getUniqueMessageRef = channelId =>
+  firebaseRefs.messages.child(channelId).push();
+
+export const storageRef = firebase.storage().ref();
+
+export const getStoragePathRef = path => storageRef.child(path);
+
 export default firebase;

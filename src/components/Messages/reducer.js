@@ -1,3 +1,5 @@
+import messagesFormReducers from "./MessagesForm/reducer";
+
 const LOAD_MESSAGE = "messages/messageLoaded";
 const RESET_MESSAGES = "messages/reset";
 
@@ -30,7 +32,10 @@ const messagesReducer = (state = defaultMessagesState, action) => {
   }
 };
 
-export default messagesReducer;
+export default {
+  messages: messagesReducer,
+  sendStatus: messagesFormReducers
+};
 
 export const actionTypes = {
   LOAD_MESSAGE,

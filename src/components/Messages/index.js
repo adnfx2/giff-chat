@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Grid, Segment, Comment } from "semantic-ui-react";
+import React, { useState } from "react";
+import { Grid, Comment } from "semantic-ui-react";
 import MessagesHeader from "./MessagesHeader";
 import MessagesForm from "./MessagesForm";
 import SearchMessages from "./SearchMessages";
-import { createUseStyles } from "react-jss";
-import firebase from "../../firebase/firebase";
-import { useSelector, useDispatch } from "react-redux";
-import { loadMessage } from "../../actions";
+import { useSelector } from "react-redux";
 import Message from "./Message";
 
 const styles = {
@@ -24,6 +21,7 @@ const styles = {
 };
 
 const Messages = () => {
+  const [isSearching, setIsSearching] = useState(false);
   const currentUser = useSelector(({ auth }) => auth.user.userProfile);
   const currentChannel = useSelector(state => state.currentChannel);
   const messages = useSelector(state => state.messages[currentChannel.id]);
@@ -35,17 +33,6 @@ const Messages = () => {
           currentUser={currentUser}
           currentChannel={currentChannel}
         />
-        {/*`  <MessagesHeader
-          starredChannel={starredChannel}
-          setStarredChannel={setStarredChannel}
-          channel={channels.selectedChannel}
-          isPrivateChannel={channels.privateChannel}
-          members={members}
-          searchHandler={searchHandler}
-          searchLoading={searchLoading}
-          currentUser={user}
-          handleSearch={handleSearch}
-          />`*/}
       </Grid.Column>
 
       <Grid.Column style={styles["fill-height-available"]}>
@@ -62,18 +49,17 @@ const Messages = () => {
       </Grid.Column>
 
       <Grid.Column style={styles.compact}>
-        footed
-        {/*`!isSearching ? (
+        {!isSearching ? (
           <MessagesForm
-            messagesRef={finalMessagesRef}
-            isPrivateChannel={channels.privateChannel}
+            currentUser={currentUser}
+            currentChannel={currentChannel}
           />
         ) : (
           <SearchMessages
             isSearching={isSearching}
-            handleExitSearch={handleExitSearch}
+            handleExit={() => console.log("handleExitSearch")}
           />
-        )`*/}
+        )}
       </Grid.Column>
     </Grid>
   );

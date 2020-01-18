@@ -25,6 +25,7 @@ const PublicChannels = ({ currentUser, currentChannel }) => {
 
   const handleChangeChannel = channelId => {
     dispatch(sidePanelActions.currentChannelChanged(channelId));
+    dispatch(sidePanelActions.unreadMessagesUpdated(channelId, 0));
   };
 
   if (channelsIds.length > 0 && !currentChannel.id) {
