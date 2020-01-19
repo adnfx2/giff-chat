@@ -8,10 +8,11 @@ import DirectMessages from "./DirectMessages";
 
 const styles = {
   sidePanel: {
-    background: "#4c3c4c",
     height: "100%",
+    marginBottom: 0,
     borderRadius: 0,
-    overflowY: "scroll"
+    overflowY: "scroll",
+    background: "#4c3c4c"
   }
 };
 

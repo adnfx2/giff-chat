@@ -31,7 +31,8 @@ const Messages = () => {
   const searchStatus = useSearchMessages(allMessages, searchValue);
   const [isSearching, searchResult] = searchStatus;
   const messages = searchResult || allMessages || [];
-  const bottomRef = useScrollToView(messages.length);
+  const [scrollHeight, setScrollHeight] = useState(0);
+  const bottomRef = useScrollToView(messages.length, scrollHeight);
 
   const handleShowSearch = () => setShowSearch(true);
 
@@ -45,18 +46,28 @@ const Messages = () => {
     setSearchValue(value);
   };
 
+  const handleScroll = e => {
+    const currentScrollHeight = e.target.scrollHeight;
+    if (scrollHeight !== currentScrollHeight) {
+      setScrollHeight(currentScrollHeight);
+    }
+  };
+
   return (
     <Grid padded columns={1} style={styles.stacked} fluid="true">
       <Grid.Column style={styles.compact}>
         <MessagesHeader
           currentUser={currentUser}
           currentChannel={currentChannel}
-          handleSearch={!showSearch ? handleShowSearch : handleExitSearch}
           showSearch={showSearch}
+          handleSearch={!showSearch ? handleShowSearch : handleExitSearch}
         />
       </Grid.Column>
 
-      <Grid.Column style={styles["fill-height-available"]}>
+      <Grid.Column
+        onScroll={handleScroll}
+        style={styles["fill-height-available"]}
+      >
         <Comment.Group>
           {messages.map(message => (
             <Message

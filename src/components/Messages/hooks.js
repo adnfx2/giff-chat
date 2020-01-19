@@ -46,14 +46,18 @@ export const useSearchMessages = (messages, searchTerm) => {
   return [isSearching, searchResult];
 };
 
-export const useScrollToView = (shouldScroll, behavior) => {
+export const useScrollToView = (
+  shouldScroll,
+  scrollHeight,
+  options = { behavior: "smooth" }
+) => {
   const viewRef = useRef(null);
 
   useEffect(() => {
     if (shouldScroll) {
-      viewRef.current.scrollIntoView({ behavior });
+      viewRef.current.scrollIntoView(options);
     }
-  }, [behavior, shouldScroll]);
+  }, [options, scrollHeight, shouldScroll]);
 
   return viewRef;
 };
