@@ -9,8 +9,7 @@ const styles = {
     color: "red"
   },
   message__image: {
-    padding: "1em",
-    maxWidth: 250
+    padding: "1em"
   }
 };
 

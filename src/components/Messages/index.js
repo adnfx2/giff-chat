@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Grid, Comment } from "semantic-ui-react";
+import { useSelector } from "react-redux";
+import { useScrollToView, useSearchMessages } from "./hooks";
 import MessagesHeader from "./MessagesHeader";
 import MessagesForm from "./MessagesForm";
 import SearchMessages from "./SearchMessages";
-import { useSelector } from "react-redux";
 import Message from "./Message";
 
 const styles = {
   stacked: {
+    width: "100%",
     height: "100%",
     flexDirection: "column"
   },
@@ -20,48 +22,6 @@ const styles = {
   }
 };
 
-let prevTimeout = null;
-
-const createTimeout = (handler, ms) => {
-  if (prevTimeout) {
-    clearTimeout(prevTimeout);
-  }
-  prevTimeout = setTimeout(handler, ms);
-};
-
-const filterMessages = (messages, searchTerm) => {
-  const regex = new RegExp(searchTerm, "gi");
-  const filteredMessages = messages.reduce((acc, message) => {
-    if (
-      (message.content && message.content.match(regex)) ||
-      message.user.name.match(regex)
-    ) {
-      acc.push(message);
-    }
-    return acc;
-  }, []);
-  return filteredMessages;
-};
-
-const useSearchMessages = (messages, searchTerm) => {
-  const [searchResult, setSearchResult] = useState(null);
-  const [isSearching, setIsSearching] = useState(false);
-  useEffect(() => {
-    if (messages && messages.length > 0 && searchTerm) {
-      setIsSearching(true);
-      const filteredMessages = filterMessages(messages, searchTerm);
-      createTimeout(() => {
-        setIsSearching(false);
-        setSearchResult(filteredMessages);
-      }, 1000);
-    } else {
-      setIsSearching(false);
-      setSearchResult(null);
-    }
-  }, [messages, searchTerm]);
-  return [isSearching, searchResult];
-};
-
 const Messages = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -70,7 +30,8 @@ const Messages = () => {
   const allMessages = useSelector(state => state.messages[currentChannel.id]);
   const searchStatus = useSearchMessages(allMessages, searchValue);
   const [isSearching, searchResult] = searchStatus;
-  const messages = searchResult || allMessages;
+  const messages = searchResult || allMessages || [];
+  const bottomRef = useScrollToView(messages.length);
 
   const handleShowSearch = () => setShowSearch(true);
 
@@ -91,19 +52,20 @@ const Messages = () => {
           currentUser={currentUser}
           currentChannel={currentChannel}
           handleSearch={!showSearch ? handleShowSearch : handleExitSearch}
+          showSearch={showSearch}
         />
       </Grid.Column>
 
       <Grid.Column style={styles["fill-height-available"]}>
         <Comment.Group>
-          {messages &&
-            messages.map(message => (
-              <Message
-                key={message.timestamp}
-                message={message}
-                currentUser={currentUser}
-              />
-            ))}
+          {messages.map(message => (
+            <Message
+              key={message.timestamp}
+              message={message}
+              currentUser={currentUser}
+            />
+          ))}
+          <div ref={bottomRef} />
         </Comment.Group>
       </Grid.Column>
 

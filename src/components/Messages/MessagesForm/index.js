@@ -73,19 +73,19 @@ const MessagesForm = ({ currentUser, currentChannel }) => {
         />
         <Button.Group icon widths="2">
           <Button
-            color="teal"
+            color="orange"
             content="Upload Media"
-            labelPosition="right"
+            labelPosition="left"
             icon="cloud upload"
-            disabled={isUploading || isSendingFileMessage}
+            disabled={!currentChannelId || isUploading || isSendingFileMessage}
             onClick={openModal}
           />
           <Button
-            color="orange"
-            content="Add reply"
-            labelPosition="left"
-            icon="edit"
-            disabled={!message || isSendingTextMessage}
+            color="blue"
+            content="Send"
+            labelPosition="right"
+            icon="send"
+            disabled={!currentChannelId || !message || isSendingTextMessage}
             onClick={handleSendMessage}
           />
         </Button.Group>
