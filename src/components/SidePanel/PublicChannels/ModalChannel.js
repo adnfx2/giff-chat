@@ -112,7 +112,6 @@ const ModalChannel = ({ visibility, onCloseHandler, currentUser }) => {
           disabled={isSubmitting}
           loading={isSubmitting}
           onClick={e => {
-            console.log("submit");
             handleSubmit(e);
           }}
         >

@@ -65,7 +65,7 @@ const MessagesForm = ({ currentUser, currentChannel }) => {
           onChange={handleInputOnChange}
           name="message"
           style={styles.messages__input}
-          label={<Button icon="add" />}
+          label={<Button icon="add" onClick={openModal} />}
           labelPosition="left"
           placeholder="Write your message"
           value={message}

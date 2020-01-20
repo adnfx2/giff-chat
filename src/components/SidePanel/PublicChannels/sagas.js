@@ -8,7 +8,6 @@ import { actions } from "./reducer";
 import { actions as sidePanelActions } from "../reducer";
 
 export function* publicChannelsListener() {
-  console.log("publicChannelsListener/init == STARTED");
   const channel = new eventChannel(emiter => {
     firebaseRefs.channels.on("child_added", snapshot =>
       emiter({ publicChannel: snapshot.val() })
@@ -16,7 +15,6 @@ export function* publicChannelsListener() {
 
     return () => {
       firebaseRefs.channels.off();
-      console.log("publicChannelsListener/firebaseRefs.channels == OFF");
     };
   });
 
@@ -33,12 +31,10 @@ export function* publicChannelsListener() {
   } finally {
     channel.close();
     yield put(actions.publicChannelsReset());
-    console.log("publicChannelsListener/channel == CLOSED");
   }
 }
 
 export function* unreadMessagesListener(channelId) {
-  console.log("unreadMessagesListener/init == STARTED");
   const channelMessagesRef = getChannelMessagesRef(channelId);
   const channel = new eventChannel(emiter => {
     channelMessagesRef.on("value", snapshot => {
@@ -47,7 +43,6 @@ export function* unreadMessagesListener(channelId) {
 
     return () => {
       channelMessagesRef.off();
-      console.log("unreadMessagesListener/channelMessagesRef == OFF");
     };
   });
 
@@ -75,6 +70,5 @@ export function* unreadMessagesListener(channelId) {
   } finally {
     channel.close();
     yield put(sidePanelActions.unreadMessagesReset());
-    console.log("unreadMessagesListener/channel == CLOSED");
   }
 }

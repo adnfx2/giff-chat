@@ -21,7 +21,6 @@ function* register({ userValues }) {
 
   try {
     yield put(actions.registerRequested());
-    console.log("requested");
     const createdUser = yield call(
       [auth, auth.createUserWithEmailAndPassword],
       userValues.email,
@@ -77,10 +76,10 @@ function* login({ userCredentials }) {
     if (user) {
       yield put(actions.loginSucceded(user.user));
     } else {
-      console.log("no user obtained");
+      console.error("no user obtained");
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     yield put(actions.loginFailed(error.message));
   }
 }
@@ -105,7 +104,6 @@ const resetApp = () => ({
 function* logout() {
   try {
     yield call([auth, auth.signOut]);
-    console.log("user logout succeded");
     yield put(resetApp());
   } catch (error) {
     console.error("user failed to logout");
@@ -128,7 +126,6 @@ function* userChangedListener() {
 
   while (true) {
     const { user } = yield take(channel);
-    console.log({ onAuthChanged: user });
     if (user) {
       yield put(actions.userChanged(user));
     } else {

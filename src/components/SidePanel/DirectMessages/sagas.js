@@ -12,7 +12,6 @@ import { firebaseRefs, getUserPresenceRef } from "../../../firebase/firebase";
 import { actions } from "./reducer";
 
 function* onlineConnectionSaga() {
-  console.log("onlineConnectionSaga/init == STARTED");
   const currentUserId = yield select(({ auth }) => auth.user.userProfile.uid);
   const userPresenceRef = getUserPresenceRef(currentUserId);
 
@@ -22,7 +21,6 @@ function* onlineConnectionSaga() {
     });
     return () => {
       userPresenceRef.off();
-      console.log("onlineConnectionSaga/userPresenceRef == OFF");
     };
   });
 
@@ -42,13 +40,11 @@ function* onlineConnectionSaga() {
   } finally {
     if (yield cancelled()) {
       channel.close();
-      console.log("onlineConnectionSaga/channel == CLOSED");
     }
   }
 }
 
 export function* connectedListener() {
-  console.log("connectedListener/init == STARTED");
   const channel = eventChannel(emiter => {
     firebaseRefs.connected.on("value", snapshot => {
       const isUserConnected = snapshot.val() ? true : false;
@@ -56,7 +52,6 @@ export function* connectedListener() {
     });
     return () => {
       firebaseRefs.connected.off();
-      console.log("connectedListener/firebaseRefs.connected == OFF");
     };
   });
 
@@ -75,13 +70,11 @@ export function* connectedListener() {
   } finally {
     if (yield cancelled()) {
       channel.close();
-      console.log("connectedListener/channel == CLOSED");
     }
   }
 }
 
 export function* usersListener() {
-  console.log("usersListener/init == STARTED");
   const currentUserId = yield select(({ auth }) => auth.user.userProfile.uid);
   const channel = new eventChannel(emiter => {
     firebaseRefs.users.on("child_added", snapshot => {
@@ -98,7 +91,6 @@ export function* usersListener() {
 
     return () => {
       firebaseRefs.users.off();
-      console.log("usersListener/firebaseRefs.users == OFF");
     };
   });
 
@@ -115,13 +107,11 @@ export function* usersListener() {
     if (yield cancelled()) {
       channel.close();
       yield put(actions.usersReset());
-      console.log("usersListener/channel == CLOSED");
     }
   }
 }
 
 export function* usersPresenceListener() {
-  console.log("usersPresenceListener/init == STARTED");
   const currentUserId = yield select(({ auth }) => auth.user.userProfile.uid);
   const channel = new eventChannel(emiter => {
     firebaseRefs.presence.on("child_added", snapshot => {
@@ -140,7 +130,6 @@ export function* usersPresenceListener() {
 
     return () => {
       firebaseRefs.presence.off();
-      console.log("usersPresenceListener/firebaseRefs.presence == OFF");
     };
   });
 
@@ -156,7 +145,6 @@ export function* usersPresenceListener() {
   } finally {
     if (yield cancelled()) {
       channel.close();
-      console.log("usersPresenceListener/channel == CLOSED");
     }
   }
 }

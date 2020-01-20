@@ -17,15 +17,11 @@ function startListeners(listeners) {
 }
 
 function* initializeChat() {
-  console.log("initChatListeners");
-
   while (true) {
     const { user } = yield take(authActionTypes.USER_CHANGED);
     const isUserLogged = user.uid ? true : false;
-    console.log({ userChanged: isUserLogged });
     if (isUserLogged) {
       const sagaListeners = yield fork(startListeners([...sidePanelListeners]));
-      console.log("wait for a reset app");
       yield take(sagaAuthActionTypes.RESET_APP);
       yield cancel(sagaListeners);
     }

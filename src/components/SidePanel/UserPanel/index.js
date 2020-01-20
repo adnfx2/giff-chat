@@ -16,7 +16,7 @@ const styles = {
   }
 };
 
-const UserPanel = ({  currentUser   })=> {
+const UserPanel = ({ currentUser }) => {
   const dispatch = useDispatch();
   const dropdownOptions = () => [
     {
@@ -27,10 +27,6 @@ const UserPanel = ({  currentUser   })=> {
         </span>
       ),
       disabled: true
-    },
-    {
-      key: "avatar",
-      text: <span>Change Avatar</span>
     },
     {
       key: "signout",

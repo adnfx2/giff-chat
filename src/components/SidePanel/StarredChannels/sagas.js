@@ -4,7 +4,6 @@ import { getStarredRef } from "../../../firebase/firebase";
 import { actions } from "./reducer";
 
 export function* starredChannelsListener() {
-  console.log("starredListener/init == STARTED");
   const currentUserId = yield select(({ auth }) => auth.user.userProfile.uid);
   const starredRef = getStarredRef(currentUserId);
   const channel = new eventChannel(emiter => {
@@ -28,7 +27,6 @@ export function* starredChannelsListener() {
 
     return () => {
       starredRef.off();
-      console.log("starredsListener/starredsRef == OFF");
     };
   });
 
@@ -41,7 +39,6 @@ export function* starredChannelsListener() {
     if (yield cancelled()) {
       channel.close();
       yield put(actions.starredReset());
-      console.log("starredsListener/channel == CLOSED");
     }
   }
 }
