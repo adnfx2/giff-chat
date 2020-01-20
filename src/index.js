@@ -34,10 +34,12 @@ const useAuthRedirect = (userId, path = { logged: "/", logout: "login" }) => {
 
 const sagaMiddleware = createSagaMiddleware();
 
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(sagaMiddleware))
-);
+const enhancers =
+  process.env.NODE_ENV === "production"
+    ? applyMiddleware(sagaMiddleware)
+    : composeWithDevTools(applyMiddleware(sagaMiddleware));
+
+const store = createStore(rootReducer, enhancers);
 
 sagaMiddleware.run(rootSaga);
 
