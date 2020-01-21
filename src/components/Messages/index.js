@@ -31,8 +31,8 @@ const Messages = () => {
   const searchStatus = useSearchMessages(allMessages, searchValue);
   const [isSearching, searchResult] = searchStatus;
   const messages = searchResult || allMessages || [];
-  const [scrollHeight, setScrollHeight] = useState(0);
-  const bottomRef = useScrollToView(messages.length, scrollHeight);
+  const [imageTracker, setImageTracker] = useState(0);
+  const bottomRef = useScrollToView(messages.length, imageTracker);
 
   const handleShowSearch = () => setShowSearch(true);
 
@@ -46,11 +46,8 @@ const Messages = () => {
     setSearchValue(value);
   };
 
-  const handleScroll = e => {
-    const currentScrollHeight = e.target.scrollHeight;
-    if (scrollHeight !== currentScrollHeight) {
-      setScrollHeight(currentScrollHeight);
-    }
+  const handleOnloadImage = e => {
+    setImageTracker(prevValue => prevValue + 1);
   };
 
   return (
@@ -64,16 +61,14 @@ const Messages = () => {
         />
       </Grid.Column>
 
-      <Grid.Column
-        onScroll={handleScroll}
-        style={styles["fill-height-available"]}
-      >
+      <Grid.Column style={styles["fill-height-available"]}>
         <Comment.Group>
           {messages.map(message => (
             <Message
               key={message.timestamp}
               message={message}
               currentUser={currentUser}
+              handleImage={handleOnloadImage}
             />
           ))}
           <div ref={bottomRef} />

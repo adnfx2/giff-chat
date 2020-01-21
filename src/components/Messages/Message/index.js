@@ -15,7 +15,7 @@ const styles = {
 
 const timeFromNow = timestamp => moment(timestamp).fromNow();
 
-const Message = ({ message, currentUser }) => {
+const Message = ({ message, currentUser, handleImage }) => {
   const isOwnMessage = message.user.id === currentUser.uid;
 
   return (
@@ -26,7 +26,7 @@ const Message = ({ message, currentUser }) => {
         <Comment.Metadata>{timeFromNow(message.timestamp)}</Comment.Metadata>
         {//prettier-ignore
         message.image
-         ? <Image src={message.image} style={styles.message__image}/>
+         ? <Image onLoad={handleImage} src={message.image} style={styles.message__image}/>
          : message.content
           ? <Comment.Text>{message.content}</Comment.Text> 
           : 'something went wrong!'}
