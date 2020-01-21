@@ -48,7 +48,7 @@ export const useSearchMessages = (messages, searchTerm) => {
 
 export const useScrollToView = (
   shouldScroll,
-  scrollHeight,
+  imagesLoaded,
   options = { behavior: "smooth" }
 ) => {
   const viewRef = useRef(null);
@@ -57,7 +57,7 @@ export const useScrollToView = (
     if (shouldScroll) {
       viewRef.current.scrollIntoView(options);
     }
-  }, [options, scrollHeight, shouldScroll]);
+  }, [options, shouldScroll, imagesLoaded]); // quick fix to properly scroll to bottom
 
   return viewRef;
 };
