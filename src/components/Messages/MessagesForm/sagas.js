@@ -10,10 +10,10 @@ import { actions } from "./reducer";
 const SEND_TEXT_MESSAGE_REQUEST = "saga-messagesForm/sendTextMessageRequest";
 const SEND_FILE_MESSAGE_REQUEST = "saga-messagesForm/sendFileMessageRequest";
 
-const sendTextMessageRequest = (currentUser, channelId, message) => ({
+const sendTextMessageRequest = (currentUser, currentChannel, message) => ({
   type: SEND_TEXT_MESSAGE_REQUEST,
   currentUser,
-  channelId,
+  currentChannel,
   message
 });
 
@@ -35,9 +35,11 @@ const createMessage = (currentUser, message, fileUrl = null) => {
   };
 };
 
-function* sendTextMessage({ currentUser, channelId, message }) {
+function* sendTextMessage({ currentUser, currentChannel, message }) {
+  const { id: channelId, isPrivate } = currentChannel;
+
   try {
-    const uniqueMessageRef = getUniqueMessageRef(channelId);
+    const uniqueMessageRef = getUniqueMessageRef(channelId, isPrivate);
 
     yield put(actions.sendingTextMessage(channelId));
 

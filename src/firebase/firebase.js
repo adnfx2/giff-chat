@@ -33,12 +33,16 @@ const createFirebaseRefs = references => {
   return referencesReduced;
 };
 
+const getMessagesType = isPrivate =>
+  isPrivate ? "privateMessages" : "messages";
+
 export const firebaseRefs = createFirebaseRefs({
   channels: "channels",
   users: "users",
   presence: "presence",
   connected: ".info/connected",
-  messages: "messages"
+  messages: "messages",
+  privateMessages: "privateMessages"
 });
 
 export const getStarredRef = userId =>
@@ -49,11 +53,15 @@ export const getStarredChannelRef = (userId, channelId) =>
 
 export const getUserPresenceRef = userId => firebaseRefs.presence.child(userId);
 
-export const getChannelMessagesRef = channelId =>
-  firebaseRefs.messages.child(channelId);
+export const getChannelMessagesRef = (channelId, isPrivate) => {
+  const messagesType = getMessagesType(isPrivate);
+  return firebaseRefs[messagesType].child(channelId);
+};
 
-export const getUniqueMessageRef = channelId =>
-  firebaseRefs.messages.child(channelId).push();
+export const getUniqueMessageRef = (channelId, isPrivate) => {
+  const messagesType = getMessagesType(isPrivate);
+  return firebaseRefs[messagesType].child(channelId).push();
+};
 
 export const storageRef = firebase.storage().ref();
 

@@ -20,7 +20,7 @@ const DirectMessages = ({ currentUser, currentChannel }) => {
   const presence = useSelector(({ users }) => users.presence);
 
   const handleChangeChannel = channelId => {
-    dispatch(actions.currentChannelChanged(channelId));
+    dispatch(actions.currentChannelChanged(channelId, true));
   };
 
   return (

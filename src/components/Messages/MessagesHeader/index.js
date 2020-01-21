@@ -48,6 +48,18 @@ const displayName = (channel, isPrivate) => {
   return `${isPrivate ? "@" : "#"}${channel.name}`;
 };
 
+const getUserId = (currentUserId, mixedId) =>
+  mixedId.split("/").filter(id => id !== currentUserId)[0];
+
+const getChannelSelector = (currentUser, channelId, isPrivate) => {
+  const currentUserId = currentUser.uid;
+  if (isPrivate) {
+    const userId = getUserId(currentUserId, channelId);
+    return state => state.users.byId[userId];
+  }
+  return state => state.channels.byId[channelId];
+};
+
 const MessagesHeader = ({
   currentUser,
   currentChannel,
@@ -56,7 +68,8 @@ const MessagesHeader = ({
 }) => {
   const dispatch = useDispatch();
   const { id: channelId, isPrivate } = currentChannel;
-  const channel = useSelector(state => state.channels.byId[channelId]);
+  const channelSelector = getChannelSelector(currentUser, channelId, isPrivate);
+  const channel = useSelector(channelSelector);
   const isStarred = useSelector(state => state.starred.indexOf(channelId) > -1);
   const classes = useSearchAnimation();
 

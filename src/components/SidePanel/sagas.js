@@ -11,8 +11,8 @@ import {
   usersPresenceListener
 } from "./DirectMessages/sagas";
 
-function* messagesListener(channelId) {
-  const messagesRef = getChannelMessagesRef(channelId);
+function* messagesListener(channelId, isPrivate) {
+  const messagesRef = getChannelMessagesRef(channelId, isPrivate);
   const channel = new eventChannel(emiter => {
     messagesRef.on("child_added", snapshot => {
       const message = snapshot.val();
@@ -40,14 +40,16 @@ function* currentChannelListener() {
 
   try {
     while (true) {
-      const { channelId } = yield take(actionTypes.CURRENT_CHANNEL_CHANGED);
+      const { channelId, isPrivate } = yield take(
+        actionTypes.CURRENT_CHANNEL_CHANGED
+      );
       const isChannelVisited = channelsVisited.indexOf(channelId) > -1;
 
       // Start messagesListener only on unvisited channels
 
       if (!isChannelVisited) {
         channelsVisited.push(channelId);
-        yield fork(messagesListener, channelId);
+        yield fork(messagesListener, channelId, isPrivate);
       }
     }
   } catch (error) {

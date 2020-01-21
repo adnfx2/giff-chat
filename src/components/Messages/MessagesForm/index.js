@@ -42,7 +42,7 @@ const MessagesForm = ({ currentUser, currentChannel }) => {
 
   const handleSendMessage = () => {
     dispatch(
-      sagaActions.sendTextMessageRequest(currentUser, currentChannelId, message)
+      sagaActions.sendTextMessageRequest(currentUser, currentChannel, message)
     );
   };
 

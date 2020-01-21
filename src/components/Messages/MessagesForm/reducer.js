@@ -35,6 +35,7 @@ const textMessageSuccess = channelId => ({
 
 const textMessageFail = (channelId, error) => ({
   type: TEXT_MESSAGE_FAIL,
+  channelId,
   error
 });
 
