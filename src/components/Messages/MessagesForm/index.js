@@ -46,6 +46,12 @@ const MessagesForm = ({ currentUser, currentChannel }) => {
     );
   };
 
+  const handleKeyDown = e => {
+    if (e.ctrlKey && e.keyCode === 13) {
+      handleSendMessage();
+    }
+  };
+
   const handleSendFile = (file, metadata) => {
     const payload = {
       currentUser,
@@ -67,6 +73,7 @@ const MessagesForm = ({ currentUser, currentChannel }) => {
           style={styles.messages__input}
           label={<Button icon="add" onClick={openModal} />}
           labelPosition="left"
+          onKeyDown={handleKeyDown}
           placeholder="Write your message"
           value={message}
           error={textStatus.error ? true : false}
