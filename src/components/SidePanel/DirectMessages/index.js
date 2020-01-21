@@ -1,7 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Menu, Icon } from "semantic-ui-react";
-import { actions } from "../reducer";
+import { Menu, Icon, Label } from "semantic-ui-react";
+import { actions as sidePanelActions } from "../reducer";
+import { getChannelId } from "../helpers";
 
 const styles = {
   dm: {
@@ -13,14 +14,22 @@ const styles = {
   }
 };
 
+const renderNotifications = count => {
+  if (count) {
+    return <Label color="red">{count}</Label>;
+  }
+};
+
 const DirectMessages = ({ currentUser, currentChannel }) => {
   const dispatch = useDispatch();
   const usersById = useSelector(({ users }) => users.byId);
   const usersIds = useSelector(({ users }) => users.allIds);
   const presence = useSelector(({ users }) => users.presence);
+  const unreadMessages = useSelector(state => state.unreadMessages);
 
   const handleChangeChannel = channelId => {
-    dispatch(actions.currentChannelChanged(channelId, true));
+    dispatch(sidePanelActions.currentChannelChanged(channelId, true));
+    dispatch(sidePanelActions.unreadMessagesUpdated(channelId, 0));
   };
 
   return (
@@ -35,6 +44,7 @@ const DirectMessages = ({ currentUser, currentChannel }) => {
         const user = usersById[userId];
         const isOnline = presence[userId];
         const directChannelId = getChannelId(userId, currentUser.uid);
+        const unreadMessagesCount = unreadMessages[directChannelId];
 
         return (
           <Menu.Item
@@ -43,18 +53,16 @@ const DirectMessages = ({ currentUser, currentChannel }) => {
             style={styles.dm__item}
             active={currentChannel.id === directChannelId}
           >
-            <Icon name="circle" color={isOnline ? "green" : "red"} />@{" "}
-            {user.name}
+            <span>
+              <Icon name="circle" color={isOnline ? "green" : "red"} />{" "}
+              {user.name}
+            </span>
+            {renderNotifications(unreadMessagesCount)}
           </Menu.Item>
         );
       })}
     </Menu.Menu>
   );
 };
-
-const getChannelId = (userId, currentUserId) =>
-  userId < currentUserId
-    ? `${userId}/${currentUserId}`
-    : `${currentUserId}/${userId}`;
 
 export default DirectMessages;

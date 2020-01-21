@@ -10,6 +10,7 @@ import {
 } from "redux-saga/effects";
 import { firebaseRefs, getUserPresenceRef } from "../../../firebase/firebase";
 import { actions } from "./reducer";
+import { getChannelId, unreadMessagesListener } from "../helpers";
 
 function* onlineConnectionSaga() {
   const currentUserId = yield select(({ auth }) => auth.user.userProfile.uid);
@@ -99,6 +100,11 @@ export function* usersListener() {
       const { user } = yield take(channel);
       if (user) {
         yield put(actions.userAdded(user));
+        yield fork(
+          unreadMessagesListener,
+          getChannelId(currentUserId, user.uid),
+          true
+        );
       }
     }
   } catch (error) {

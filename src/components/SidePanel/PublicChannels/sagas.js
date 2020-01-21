@@ -1,11 +1,8 @@
 import { eventChannel } from "redux-saga";
-import { fork, put, select, take } from "redux-saga/effects";
-import {
-  firebaseRefs,
-  getChannelMessagesRef
-} from "../../../firebase/firebase";
+import { fork, put, take } from "redux-saga/effects";
+import { firebaseRefs } from "../../../firebase/firebase";
 import { actions } from "./reducer";
-import { actions as sidePanelActions } from "../reducer";
+import { unreadMessagesListener } from "../helpers";
 
 export function* publicChannelsListener() {
   const channel = new eventChannel(emiter => {
@@ -31,44 +28,5 @@ export function* publicChannelsListener() {
   } finally {
     channel.close();
     yield put(actions.publicChannelsReset());
-  }
-}
-
-export function* unreadMessagesListener(channelId) {
-  const channelMessagesRef = getChannelMessagesRef(channelId);
-  const channel = new eventChannel(emiter => {
-    channelMessagesRef.on("value", snapshot => {
-      emiter({ totalMessages: snapshot.numChildren() });
-    });
-
-    return () => {
-      channelMessagesRef.off();
-    };
-  });
-
-  try {
-    let readMessages = null;
-    while (true) {
-      const { totalMessages } = yield take(channel);
-
-      const currentChannelId = yield select(state => state.currentChannel.id);
-
-      if (currentChannelId !== channelId) {
-        readMessages = readMessages === null ? totalMessages : readMessages;
-
-        const unreadMessages = totalMessages - readMessages;
-
-        yield put(
-          sidePanelActions.unreadMessagesUpdated(channelId, unreadMessages)
-        );
-      } else {
-        readMessages = totalMessages;
-      }
-    }
-  } catch (error) {
-    console.error({ publicNotificationsListener: error });
-  } finally {
-    channel.close();
-    yield put(sidePanelActions.unreadMessagesReset());
   }
 }
