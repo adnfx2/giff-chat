@@ -22,22 +22,22 @@ const UserPanel = ({ currentUser }) => {
     {
       key: "user",
       text: (
-        <span>
+        <div>
           Signed in as <strong>{currentUser.displayName}</strong>
-        </span>
+        </div>
       ),
       disabled: true
     },
     {
       key: "signout",
       text: (
-        <span
+        <div
           onClick={() => {
             dispatch(sagaActions.logoutRequested(currentUser.uid));
           }}
         >
           Sign Out
-        </span>
+        </div>
       )
     }
   ];
