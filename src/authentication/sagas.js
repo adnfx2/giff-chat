@@ -1,6 +1,9 @@
 import { eventChannel } from "redux-saga";
 import { all, call, fork, put, take, takeLatest } from "redux-saga/effects";
-import firebase, { firebaseRefs } from "../firebase/firebase";
+import firebase, {
+  firebaseRefs,
+  getUserPresenceRef
+} from "../firebase/firebase";
 import md5 from "md5";
 import { actions } from "./reducer";
 
@@ -93,16 +96,19 @@ function* loginWatcher() {
 const LOGOUT_REQUESTED = "saga-auth/logoutRequested";
 const RESET_APP = "saga-auth/RESET_APP";
 
-const logoutRequested = userCredentials => ({
-  type: LOGOUT_REQUESTED
+const logoutRequested = currentUserId => ({
+  type: LOGOUT_REQUESTED,
+  currentUserId
 });
 
 const resetApp = () => ({
   type: RESET_APP
 });
 
-function* logout() {
+function* logout({ currentUserId }) {
+  const userPresenceRef = getUserPresenceRef(currentUserId);
   try {
+    yield call([userPresenceRef, userPresenceRef.remove]);
     yield call([auth, auth.signOut]);
     yield put(resetApp());
   } catch (error) {
@@ -128,6 +134,9 @@ function* userChangedListener() {
     const { user } = yield take(channel);
     if (user) {
       yield put(actions.userChanged(user));
+      const currentUserId = user.uid;
+      const userPresenceRef = getUserPresenceRef(currentUserId);
+      yield call([userPresenceRef, userPresenceRef.set], true);
     } else {
       yield put(actions.userRemoved());
     }

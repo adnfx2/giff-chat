@@ -33,7 +33,7 @@ const UserPanel = ({ currentUser }) => {
       text: (
         <span
           onClick={() => {
-            dispatch(sagaActions.logoutRequested());
+            dispatch(sagaActions.logoutRequested(currentUser.uid));
           }}
         >
           Sign Out
