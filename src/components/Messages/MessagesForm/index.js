@@ -80,7 +80,7 @@ const MessagesForm = ({ currentUser, currentChannel }) => {
         />
         <Button.Group icon widths="2">
           <Button
-            color="orange"
+            color="teal"
             content="Upload Media"
             labelPosition="left"
             icon="cloud upload"
