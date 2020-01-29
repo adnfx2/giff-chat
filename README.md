@@ -4,7 +4,7 @@ Giff it's a conceptual chat application based on slack/discord which supports ba
 
 ## Demo
 [Live preview :rocket:](https://react-chat-222a7.firebaseapp.com/)
-<sub>Please use a fake email and password in the live preview</sub>
+<sub>Please register with a fake email and password in the live preview</sub>
 
 ![Giff clip](/assets/clipGiff.gif)
 
