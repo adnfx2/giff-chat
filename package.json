@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "firebase": "^7.3.0",
+    "firebase": "^10.9.0",
     "formik": "^2.0.3",
     "md5": "^2.2.1",
     "mime-types": "^2.1.24",
